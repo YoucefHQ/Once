@@ -1,5 +1,5 @@
 {
-  "name": "Chrome Extension with React & Webpack",
+  "name": "Once",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
@@ -14,11 +14,13 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-    "js": ["contentScript.bundle.js"],
-    "css": ["content.styles.css"]
-  }],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["contentScript.bundle.js"],
+      "css": ["content.styles.css"]
+    }
+  ],
   "web_accessible_resources": [
     "content.styles.css",
     "icon-128.png",
