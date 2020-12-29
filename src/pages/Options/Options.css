@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+#app-container {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+h1 {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  background-size: 80px 80px;
+  height: 80px;
+  width: 80px;
+  margin: auto;
+  text-align: center;
+}
+h2 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 64px;
+  letter-spacing: -1px;
+  color: #19191b;
+  margin-top: 48px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+  color: #696871;
+  margin-bottom: 32px;
+  text-align: center;
+}
+p {
+  font-family: 'DM Sans', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #696871;
+  margin-top: 32px;
+  text-align: center;
+}
+button {
+  font-family: 'DM Sans', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  background: rgb(142, 151, 253);
+  padding: 16px 40px;
+  border-radius: 32px;
+  border: 0;
+  margin: auto;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+button:hover {
+  background: rgba(142, 151, 253, 0.9);
+}
+
+button:active,
+button:focus {
+  outline: 0;
+}
+
+.multi-select {
+  margin-bottom: 32px;
+  font-family: 'DM Sans', sans-serif;
+  font-style: normal;
+  font-size: 16px;
+  color: #19191b;
+}
+
+.menu {
+  float: right;
+  text-align: left;
+}
+.menu span {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: #19191b;
+  cursor: pointer;
+  padding: 16px 8px;
+}
+
+.menu ul {
+  margin-top: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  display: none;
+}
+
+.menu:hover ul {
+  display: block;
+}
+
+.menu ul a {
+  display: block;
+  padding: 16px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #19191b;
+  text-decoration: none;
+}
+
+.menu ul a:first-child:hover,
+.menu ul a:last-child:hover {
+  background: #8e97fd;
+  color: #fff;
+}
+
+.menu ul a:first-child:hover {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.menu ul a:last-child:hover {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}

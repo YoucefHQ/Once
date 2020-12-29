@@ -5,13 +5,26 @@
     "scripts": ["background.bundle.js"]
   },
   "browser_action": {
-    "default_icon": "icon-34.png"
+    "16": "icon-16.png",
+    "24": "icon-24.png",
+    "32": "icon-32.png",
+    "128": "icon-128.png"
   },
   "icons": {
+    "16": "icon-16.png",
+    "24": "icon-24.png",
+    "32": "icon-32.png",
+    "48": "icon-48.png",
     "128": "icon-128.png"
   },
   "permissions": ["tabs", "storage"],
-  "web_accessible_resources": ["icon-128.png", "icon-34.png"],
+  "web_accessible_resources": [
+    "icon-16.png",
+    "icon-24.png",
+    "icon-32.png",
+    "icon-48.png",
+    "icon-128.png"
+  ],
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.gstatic.com/ https://*.firebaseio.com https://apis.google.com; object-src 'self' 'unsafe-eval'"
 }
