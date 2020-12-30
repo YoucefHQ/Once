@@ -17,6 +17,12 @@
     "48": "icon-48.png",
     "128": "icon-128.png"
   },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["contentScript.bundle.js"]
+    }
+  ],
   "permissions": ["tabs", "storage"],
   "web_accessible_resources": [
     "icon-16.png",

@@ -6,20 +6,16 @@ import '../../assets/img/icon-16.png';
 import { getWebsiteName } from './../Options/default-websites';
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  if (details.reason == 'install') {
-    var optionsUrl = chrome.extension.getURL('options.html');
-    chrome.tabs.query({ url: optionsUrl }, function (tabs) {
-      if (tabs.length) {
-        chrome.tabs.update(tabs[0].id, { active: true });
-      } else {
-        chrome.tabs.create({ url: optionsUrl });
-      }
-    });
-  }
+  if (details.reason == 'install') chrome.runtime.openOptionsPage();
 });
 
 chrome.browserAction.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage();
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender) {
+  if (request.type == 'openOptions') chrome.runtime.openOptionsPage();
+  else if ((request.type = 'closeTab')) chrome.tabs.remove(sender.tab.id);
 });
 
 const isWebsiteBlocked = (url) => {
@@ -59,13 +55,39 @@ const timeAgo = (websiteName) => {
 
 const newUrls = [];
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-  console.log(changeInfo);
   if (changeInfo.url) {
     newUrls[tabId] = changeInfo.url;
+
     if (isWebsiteBlocked(changeInfo.url)) {
       const websiteName = getWebsiteName(changeInfo.url);
       if (isLastVisitLessThanOneHour(websiteName)) {
         alert('You were on ' + websiteName + ' ' + timeAgo(websiteName) + '.');
+        /*
+        chrome.tabs.sendMessage(
+          tabId,
+          {
+            type: 'blockWebsite',
+            websiteName: websiteName,
+            timeAgo: timeAgo(websiteName),
+          },
+          function () {
+            alert('First mesage sent from Background file.');
+          }
+        );
+
+        chrome.tabs.query(
+          { active: true, currentWindow: true },
+          function (tabs) {
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              { greeting: 'hello' },
+              function () {
+                alert('Second mesage sent from Background file.');
+              }
+            );
+          }
+        );
+        */
       }
     }
   }
@@ -79,14 +101,3 @@ chrome.tabs.onRemoved.addListener(function (tabId) {
       window.localStorage.setItem(websiteName, Date.now());
   }
 });
-
-/*
-// Checks if website is fully closed and not open on another tab
-const isFullyClosed = (url) => {
-  var length;
-  chrome.tabs.query({ url: url }, function (tabs) {
-    lenght += tabs.length;
-  });
-  return length == 0;
-};
-*/

@@ -38,6 +38,10 @@ var options = {
   entry: {
     options: path.join(__dirname, 'src', 'pages', 'Options', 'index.tsx'),
     background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
+    contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
+  },
+  chromeExtensionBoilerplate: {
+    notHotReload: ['contentScript'],
   },
   output: {
     path: path.resolve(__dirname, 'build'),
