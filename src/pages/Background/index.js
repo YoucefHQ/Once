@@ -63,6 +63,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
       if (isLastVisitLessThanOneHour(websiteName)) {
         alert('You were on ' + websiteName + ' ' + timeAgo(websiteName) + '.');
         /*
+        Send message to Content/index.js to showOverlay
         chrome.tabs.sendMessage(
           tabId,
           {

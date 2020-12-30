@@ -35,4 +35,4 @@ const closeTab = () => {
   chrome.runtime.sendMessage({ type: 'closeTab' });
 };
 
-//showOverlay('9gag', '3 seconds ago');
+// Receive message from Background/index.js and showOverlay(websiteName, timeago)
