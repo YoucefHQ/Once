@@ -1,5 +1,4 @@
 export const defaultWebsites = [
-  { label: '9gag', value: 'https://9gag.com/' },
   { label: 'BBC', value: 'https://www.bbc.com/' },
   { label: 'BuzzFeed', value: 'https://www.buzzfeed.com/' },
   { label: 'CNN', value: 'https://www.cnn.com/' },

@@ -5,7 +5,6 @@ import '../../assets/img/icon-24.png';
 import '../../assets/img/icon-16.png';
 import { getWebsiteName } from './../Options/default-websites';
 
-// Open options page after install
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason == 'install') {
     var optionsUrl = chrome.extension.getURL('options.html');
@@ -19,7 +18,6 @@ chrome.runtime.onInstalled.addListener(function (details) {
   }
 });
 
-// Open options page after clicking on icon
 chrome.browserAction.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage();
 });
@@ -37,19 +35,38 @@ const isWebsiteBlocked = (url) => {
 const isLastVisitLessThanOneHour = (websiteName) => {
   const lastVisit = window.localStorage.getItem(websiteName);
   if (!lastVisit) return false;
-  return Date.now() - lastVisit < 3600000;
+  return Date.now() - lastVisit < 60 * 60 * 1000;
+};
+
+const maybePluralize = (count, noun, suffix = 's') =>
+  `${count} ${noun}${count !== 1 ? suffix : ''}`;
+
+const timeAgo = (websiteName) => {
+  const prev = window.localStorage.getItem(websiteName);
+  var ms_Min = 60 * 1000;
+  var ms_Hour = ms_Min * 60;
+  var ms_Day = ms_Hour * 24;
+  var diff = Date.now() - prev;
+
+  if (diff < ms_Min) {
+    return maybePluralize(Math.round(diff / 1000), 'second') + ' ago';
+  } else if (diff < ms_Hour) {
+    return maybePluralize(Math.round(diff / ms_Min), 'minute') + ' ago';
+  } else if (diff < ms_Day) {
+    return maybePluralize(Math.round(diff / ms_Hour), 'hour') + ' ago';
+  }
 };
 
 const newUrls = [];
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+  console.log(changeInfo);
   if (changeInfo.url) {
     newUrls[tabId] = changeInfo.url;
-
     if (isWebsiteBlocked(changeInfo.url)) {
       const websiteName = getWebsiteName(changeInfo.url);
-
-      if (isLastVisitLessThanOneHour(websiteName))
-        alert('You were on ' + websiteName + ' less than an hour ago.');
+      if (isLastVisitLessThanOneHour(websiteName)) {
+        alert('You were on ' + websiteName + ' ' + timeAgo(websiteName) + '.');
+      }
     }
   }
 });

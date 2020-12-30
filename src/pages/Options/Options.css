@@ -5,6 +5,10 @@
   padding-bottom: 80px;
 }
 
+::selection {
+  background: rgba(142, 151, 253, 0.3);
+}
+
 h1 {
   text-indent: 100%;
   white-space: nowrap;
