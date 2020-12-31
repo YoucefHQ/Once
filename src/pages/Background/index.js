@@ -1,3 +1,4 @@
+import '../../assets/img/icon-240.png';
 import '../../assets/img/icon-128.png';
 import '../../assets/img/icon-48.png';
 import '../../assets/img/icon-32.png';
