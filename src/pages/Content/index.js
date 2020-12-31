@@ -35,4 +35,9 @@ const closeTab = () => {
   chrome.runtime.sendMessage({ type: 'closeTab' });
 };
 
-// Receive message from Background/index.js and showOverlay(websiteName, timeago)
+chrome.runtime.sendMessage(
+  { type: 'checkWebsite', url: location.href },
+  function (response) {
+    if (response) showOverlay(response.websiteName, response.timeAgo);
+  }
+);

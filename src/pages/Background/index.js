@@ -13,9 +13,21 @@ chrome.browserAction.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage();
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.type == 'openOptions') chrome.runtime.openOptionsPage();
-  else if ((request.type = 'closeTab')) chrome.tabs.remove(sender.tab.id);
+  else if (request.type == 'closeTab') chrome.tabs.remove(sender.tab.id);
+  else if (request.type == 'checkWebsite') {
+    if (isWebsiteBlocked(request.url)) {
+      const websiteName = getWebsiteName(request.url);
+      if (isLastVisitLessThanOneHour(websiteName)) {
+        sendResponse({
+          websiteName: getWebsiteName(request.url),
+          timeAgo: timeAgo(websiteName),
+        });
+      }
+    }
+    sendResponse(false);
+  }
 });
 
 const isWebsiteBlocked = (url) => {
@@ -55,30 +67,7 @@ const timeAgo = (websiteName) => {
 
 const newUrls = [];
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-  if (changeInfo.url) {
-    newUrls[tabId] = changeInfo.url;
-
-    if (isWebsiteBlocked(changeInfo.url)) {
-      const websiteName = getWebsiteName(changeInfo.url);
-      if (isLastVisitLessThanOneHour(websiteName)) {
-        alert('You were on ' + websiteName + ' ' + timeAgo(websiteName) + '.');
-        /*
-        Send message to Content/index.js to showOverlay
-        chrome.tabs.sendMessage(
-          tabId,
-          {
-            type: 'blockWebsite',
-            websiteName: websiteName,
-            timeAgo: timeAgo(websiteName),
-          },
-          function () {
-            alert('First mesage sent from Background file.');
-          }
-        );
-        */
-      }
-    }
-  }
+  if (changeInfo.url) newUrls[tabId] = changeInfo.url;
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId) {
