@@ -38,6 +38,9 @@ const Options = ({
             <div className="menu">
               <span>{user.displayName?.split(' ')[0]} ▾</span>
               <ul>
+                <a href="mailto:help@onceforchrome.com" target="_blank">
+                  <li>Help</li>
+                </a>
                 <a href="#" onClick={signOut}>
                   <li>Sign out</li>
                 </a>
@@ -72,9 +75,7 @@ const Options = ({
                 Once is the best way to be productive and limit the usage of
                 time-consuming websites.
               </h3>
-              <button className="primary" onClick={signInWithGoogle}>
-                Sign in with Google
-              </button>
+              <button onClick={signInWithGoogle}>Sign in with Google</button>
             </div>
             <div className="col-2"></div>
           </div>
