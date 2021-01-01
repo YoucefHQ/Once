@@ -9,6 +9,11 @@
 # production
 /build
 
+# assets on website
+/website/Options.css
+/website/reset.css
+/website/simple-grid.min.css
+
 # misc
 .DS_Store
 .env.local
