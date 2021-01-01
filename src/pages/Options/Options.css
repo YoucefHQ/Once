@@ -114,8 +114,8 @@ button:focus {
   text-decoration: none;
 }
 
-.menu ul a:first-child:hover,
-.menu ul a:last-child:hover {
+.menu ul a:hover,
+.menu ul a:hover {
   background: #8e97fd;
   color: #fff;
 }

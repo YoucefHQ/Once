@@ -38,8 +38,23 @@ const Options = ({
             <div className="menu">
               <span>{user.displayName?.split(' ')[0]} ▾</span>
               <ul>
-                <a href="mailto:help@onceforchrome.com" target="_blank">
-                  <li>Help</li>
+                <a
+                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  target="_blank"
+                >
+                  <li>Support</li>
+                </a>
+                <a
+                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  target="_blank"
+                >
+                  <li>Feedback</li>
+                </a>
+                <a
+                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
+                  target="_blank"
+                >
+                  <li>Rate Once</li>
                 </a>
                 <a href="#" onClick={signOut}>
                   <li>Sign out</li>
@@ -50,15 +65,13 @@ const Options = ({
             <div className="col-8">
               <h1>Once</h1>
               <h2 style={{ color: 'black' }}>
-                Select the websites you want to spend less time on.
+                Select the websites that waste your time.
               </h2>
               <MultiSelectWebsites />
               <p>
-                You can still access these websites without any time limits.
-                However, Once will help you limit your visits to only once per
-                hour. So once you are done browsing these websites and as soon
-                as you close their tab, you will able to come back after one
-                hour.
+                Once lets you visit these websites once per hour. The timer
+                starts when you close the tab of one of these websites and only
+                applies it to the homepages.
               </p>
             </div>
             <div className="col-2"></div>
@@ -67,13 +80,24 @@ const Options = ({
       ) : (
         <>
           <div className="row">
+            <div className="menu">
+              <span>Guest ▾</span>
+              <ul>
+                <a
+                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  target="_blank"
+                >
+                  <li>Support</li>
+                </a>
+              </ul>
+            </div>
             <div className="col-2"></div>
             <div className="col-8">
               <h1>Once</h1>
               <h2>Welcome to Once!</h2>
               <h3>
-                Once is the best way to be productive and limit the usage of
-                time-consuming websites.
+                Take control of your digital life, and stay focused by limiting
+                the time spent on distracting websites.
               </h3>
               <button onClick={signInWithGoogle}>Sign in with Google</button>
             </div>

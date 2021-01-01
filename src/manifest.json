@@ -1,5 +1,6 @@
 {
-  "name": "Once",
+  "name": "Once - Block distracting websites",
+  "description": "Take control of your digital life, and stay focused by limiting the time spent on distracting websites.",
   "options_page": "options.html",
   "background": {
     "scripts": ["background.bundle.js"]
@@ -26,7 +27,7 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs"],
   "web_accessible_resources": [
     "icon-16.png",
     "icon-24.png",

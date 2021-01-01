@@ -36,6 +36,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse({
           websiteName: getWebsiteName(request.url),
           timeAgo: timeAgo(websiteName),
+          timeRemaining: timeRemaining(websiteName),
         });
         amplitude.getInstance().logEvent('Website Blocked');
       } else {
@@ -78,6 +79,19 @@ const timeAgo = (websiteName) => {
     return maybePluralize(Math.round(diff / ms_Min), 'minute') + ' ago';
   } else if (diff < ms_Day) {
     return maybePluralize(Math.round(diff / ms_Hour), 'hour') + ' ago';
+  }
+};
+
+const timeRemaining = (websiteName) => {
+  const prev = window.localStorage.getItem(websiteName);
+  var ms_Min = 60 * 1000;
+  var ms_Hour = ms_Min * 60;
+  var diff = Date.now() - prev;
+
+  if (diff < ms_Min) {
+    return '1 hour';
+  } else if (diff < ms_Hour) {
+    return maybePluralize(60 - Math.round(diff / ms_Min), 'minute');
   }
 };
 
