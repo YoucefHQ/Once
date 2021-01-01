@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta
+      name="description"
+      content="Once is the best way to be productive and limit the usage of time-consuming websites."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Once: Block distrating websites." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://onceforchrome.com/" />
+    <meta property="og:image" content="http://onceforchrome.com/icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="stylesheet" href="../src/assets/css/reset.css" />
+    <link rel="stylesheet" href="../src/assets/css/simple-grid.min.css" />
+    <link rel="stylesheet" href="../src/pages/Options/Options.css" />
+    <meta name="theme-color" content="#8e97fd" />
+    <style>
+      h1 {
+        background-image: url(logo.png);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="app-container">
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-8">
+            <h1>Once</h1>
+            <h2>Once</h2>
+            <h3>
+              Once is the best way to be productive and limit the usage of
+              time-consuming websites.
+            </h3>
+            <button>Add to Chrome</button>
+          </div>
+          <div class="col-2"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      window.ga = function () {
+        ga.q.push(arguments);
+      };
+      ga.q = [];
+      ga.l = +new Date();
+      ga('create', 'UA-XXXXX-Y', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('set', 'transport', 'beacon');
+      ga('send', 'pageview');
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+  </body>
+</html>
