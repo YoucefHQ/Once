@@ -145,6 +145,11 @@ class MultiSelectWebsites extends React.Component {
       index++
     ) {
       newSelectedWebsites.push(selectedWebsites[index].value);
+      if (selectedWebsites[index].label == 'Twitter') {
+        newSelectedWebsites.push('https://twitter.com/home');
+      } else if (selectedWebsites[index].label == 'Feedly') {
+        newSelectedWebsites.push('https://feedly.com/i/my');
+      }
     }
     this.setState({
       selectedWebsites: newSelectedWebsites,
