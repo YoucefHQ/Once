@@ -48,7 +48,7 @@
             <a
               href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep"
             >
-              <button>Add to Chrome</button>
+              <button id="addOnce">Add to Chrome</button>
             </a>
           </div>
           <div class="col-2"></div>
@@ -68,5 +68,20 @@
         </div>
       </div>
     </div>
+    <script>
+      function isBrave() {
+        if (window.navigator.brave != undefined) {
+          if (window.navigator.brave.isBrave.name == 'isBrave') {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+      if (isBrave())
+        document.getElementById('addOnce').innerHTML = 'Add to Brave';
+    </script>
   </body>
 </html>
