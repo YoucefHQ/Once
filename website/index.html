@@ -22,8 +22,14 @@
     <link rel="stylesheet" href="Options.css" />
     <meta name="theme-color" content="#8e97fd" />
     <style>
+      body {
+        overflow-x: hidden;
+      }
       h1 {
         background-image: url(logo.png);
+      }
+      h3 {
+        word-break: break-all;
       }
       p {
         margin-bottom: 32px;
@@ -70,15 +76,9 @@
     </div>
     <script>
       function isBrave() {
-        if (window.navigator.brave != undefined) {
-          if (window.navigator.brave.isBrave.name == 'isBrave') {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
+        if (window.navigator.brave != undefined)
+          return window.navigator.brave.isBrave.name == 'isBrave';
+        else return false;
       }
       if (isBrave())
         document.getElementById('addOnce').innerHTML = 'Add to Brave';
