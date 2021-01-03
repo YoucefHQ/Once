@@ -69,9 +69,9 @@ const Options = ({
               </h2>
               <MultiSelectWebsites />
               <p>
-                Once lets you visit these websites once per hour. The timer
-                starts when you close the tab of one of these websites and only
-                applies it to the homepages.
+                Once limits your visits to each of these websites to only once
+                per hour. The timer starts when you close the tab of one of
+                these websites and only applies to the websites' homepages.
               </p>
             </div>
             <div className="col-2"></div>
@@ -139,6 +139,11 @@ class MultiSelectWebsites extends React.Component {
 
   handleChange = (selectedWebsites: any) => {
     var newSelectedWebsites = [];
+    if (this.state.saveText == 'Saved!') {
+      this.setState({
+        saveText: 'Save',
+      });
+    }
     for (
       let index = 0;
       selectedWebsites != null && index < selectedWebsites.length;
