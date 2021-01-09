@@ -152,6 +152,8 @@ class MultiSelectWebsites extends React.Component {
       newSelectedWebsites.push(selectedWebsites[index].value);
       if (selectedWebsites[index].label == 'Twitter') {
         newSelectedWebsites.push('https://twitter.com/home');
+      } else if (selectedWebsites[index].label == 'Reddit') {
+        newSelectedWebsites.push('https://old.reddit.com/');
       }
     }
     this.setState({
@@ -164,6 +166,21 @@ class MultiSelectWebsites extends React.Component {
       'onceBlockedWebsites',
       JSON.stringify(this.state.selectedWebsites)
     );
+
+    const previouslyBlockedWebsites = defaultWebsites.filter(
+      (blockedWebsite) =>
+        !this.state.selectedWebsites.includes(blockedWebsite.value as never) &&
+        window.localStorage.getItem(blockedWebsite.label) !== null
+    );
+    for (
+      let index = 0;
+      previouslyBlockedWebsites != null &&
+      index < previouslyBlockedWebsites.length;
+      index++
+    ) {
+      window.localStorage.removeItem(previouslyBlockedWebsites[index].label);
+    }
+
     this.setState({
       saveText: 'Saved!',
     });

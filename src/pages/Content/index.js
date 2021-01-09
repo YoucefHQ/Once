@@ -30,15 +30,15 @@ const showOverlay = (websiteName, timeAgo, timeRemaining) => {
 
 const showOnboarding = (websiteName) => {
   const style = document.createElement('style');
-  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);#onceContent{position:fixed;bottom:0;left:0;right:0;text-align:center;background:#8e97fd;width:100%;z-index:9999999999}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;color:#FFF;margin:12px}#onceOptions{text-decoration:underline;cursor:pointer}#onceButton{display:block;margin:auto;margin-top:6px;font-family:'DM Sans',sans-serif!important;font-weight:500;font-size:14px;background:transparent;padding:2px 8px;border-radius:32px;border:1px solid white;color:#FFF;cursor:pointer}#onceButton:active,#onceButton:focus{outline:0}`;
+  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);#onceContent{position:fixed;bottom:0;left:0;right:0;text-align:center;background:#8e97fd;width:100%;z-index:9999999999}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;color:#FFF;margin:12px}#onceOptions{text-decoration:underline;cursor:pointer}#onceButton{margin-left:10px;font-family:'DM Sans',sans-serif!important;font-weight:500;font-size:14px;background:transparent;padding:2px 8px;border-radius:32px;border:1px solid white;color:#FFF;cursor:pointer}#onceButton:active,#onceButton:focus{outline:0}`;
   document.head.append(style);
 
   const onceContent = document.createElement('div');
   onceContent.setAttribute('id', 'onceContent');
   onceContent.innerHTML =
-    "<p>Going forward, <span id='onceOptions'>Once</span> will limit your visits of " +
+    "<p><span id='onceOptions'>Once</span> limits your visits of " +
     websiteName +
-    ' to only once hour. The timer starts after closing this page.<button id="onceButton">Got it!</button></p>';
+    ' to once hour. The timer starts after closing this tab<button id="onceButton">Got it</button></p>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceOptions').addEventListener('click', openOptions);

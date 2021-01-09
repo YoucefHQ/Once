@@ -42,14 +42,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         amplitude.getInstance().logEvent('Website Blocked');
       } else {
         const onceOnboarding = window.localStorage.getItem('onceOnboarding');
-        if (!onceOnboarding) {
-          window.localStorage.setItem('onceOnboarding', 'done');
-          sendResponse({
-            showOnboarding: true,
-            websiteName: getWebsiteName(request.url),
-          });
-          amplitude.getInstance().logEvent('Onboarding Shown');
-        }
+        //if (!onceOnboarding) {
+        window.localStorage.setItem('onceOnboarding', 'done');
+        sendResponse({
+          showOnboarding: true,
+          websiteName: getWebsiteName(request.url),
+        });
+        amplitude.getInstance().logEvent('Onboarding Shown');
+        //}
         amplitude.getInstance().logEvent('Website Visited');
       }
     }

@@ -23,6 +23,8 @@ export const defaultWebsites = [
 export const getWebsiteName = (url: String) => {
   if (url == 'https://twitter.com/home') {
     return 'Twitter';
+  } else if (url == 'https://old.reddit.com/') {
+    return 'Reddit';
   } else {
     const blockedWebsitesObject = defaultWebsites.filter(function (
       blockedWebsite
