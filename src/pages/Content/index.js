@@ -1,6 +1,6 @@
-const showOverlay = (websiteName, timeAgo, timeRemaining) => {
+const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
   const style = document.createElement('style');
-  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);body{overflow-y:hidden!important}#onceOverlay{background:#FFF;z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;margin-top:0.5rem;z-index:9999999999}#onceRow{position:relative;width:100%}#onceContainer{width:75%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{display:inline-block;cursor:pointer;width:80px;margin:auto}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:#19191b;margin-top:46px;margin-bottom:32px;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:#696871;margin-top:32px}#onceOptions{text-decoration:underline;cursor:pointer}`;
+  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);body{overflow-y:hidden!important}#onceOverlay{background:#FFF;z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;margin-top:0.5rem;z-index:9999999999}#onceRow{position:relative;width:100%}#onceContainer{width:75%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{display:inline-block;cursor:pointer;width:80px;margin:auto}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:#19191b;margin-top:46px;margin-bottom:32px;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceContent h3{font-family:'DM Sans',sans-serif!important;color:#696871;margin-bottom:32px;text-align:center;font-weight:500;font-size:24px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:#696871;margin-top:32px}#onceOptions{text-decoration:underline;cursor:pointer}#onceContent a {color:#8e97fd;font-family:inherit;font-size:inherit;text-decoration:underline;}`;
   document.head.append(style);
 
   const onceOverlay = document.createElement('div');
@@ -16,11 +16,15 @@ const showOverlay = (websiteName, timeAgo, timeRemaining) => {
     websiteName +
     '<br>' +
     timeAgo +
-    ".</h2><button id='onceButton'>Close " +
+    '.</h2><h3>You can visit ' +
     websiteName +
-    '</button><p>Come back in ' +
+    ' again in ' +
     timeRemaining +
-    ".<br><br><span id='onceOptions'>Once</span> helps you take control of your digital life, and stay focused.</p></div></div>";
+    ".</h3><button id='onceButton'>Close " +
+    websiteName +
+    "</button><p><span id='onceOptions'>Once</span> helps you take control of your digital life, and stay focused.<br><br>So far, Once has saved you " +
+    blockedTimes +
+    ' times from distracting website visits. Enjoy using Once? <a href="https://chrome.google.com/webstore/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">Leave a review</a> on the Chrome Web Store or <a href="https://twitter.com/intent/tweet?text=Check%20this%20Chrome%20Extension%3A%20Once%20helps%20you%20take%20control%20of%20your%20digital%20life%2C%20and%20stay%20focused%20by%20limiting%20the%20time%20spent%20on%20distracting%20websites%20https%3A%2F%2Fonceforchrome.com%2F" target="_blank">tweet about it</a>.</p></div></div>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceLogo').addEventListener('click', openOptions);
@@ -64,7 +68,8 @@ chrome.runtime.sendMessage(
       showOverlay(
         response.websiteName,
         response.timeAgo,
-        response.timeRemaining
+        response.timeRemaining,
+        response.blockedTimes
       );
     else if (response.showOnboarding) showOnboarding(response.websiteName);
   }

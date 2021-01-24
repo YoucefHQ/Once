@@ -33,17 +33,29 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (isWebsiteBlocked(request.url)) {
       const websiteName = getWebsiteName(request.url);
       if (isLastVisitLessThanOneHour(websiteName)) {
+        const blockedTimes = window.localStorage.getItem('blockedTimes');
+        if (blockedTimes === null) {
+          window.localStorage.setItem('blockedTimes', '2');
+        } else {
+          const incrementBlockedTimes = parseInt(blockedTimes) + 1;
+          window.localStorage.setItem(
+            'blockedTimes',
+            incrementBlockedTimes.toString()
+          );
+        }
+
         sendResponse({
           blockWebsite: true,
           websiteName: getWebsiteName(request.url),
           timeAgo: timeAgo(websiteName),
           timeRemaining: timeRemaining(websiteName),
+          blockedTimes: window.localStorage.getItem('blockedTimes'),
         });
         amplitude.getInstance().logEvent('Website Blocked');
       } else {
-        const onceOnboarding = window.localStorage.getItem('onceOnboarding');
+        //const onceOnboarding = window.localStorage.getItem('onceOnboarding');
         //if (!onceOnboarding) {
-        window.localStorage.setItem('onceOnboarding', 'done');
+        //window.localStorage.setItem('onceOnboarding', 'done');
         sendResponse({
           showOnboarding: true,
           websiteName: getWebsiteName(request.url),
@@ -102,6 +114,25 @@ const timeRemaining = (websiteName) => {
     return '1 hour';
   } else if (diff < ms_Hour) {
     return maybePluralize(60 - Math.round(diff / ms_Min), 'minute');
+  }
+};
+
+const timeConvert = (minutes) => {
+  var num = minutes;
+  var hours = num / 60;
+  var rhours = Math.floor(hours);
+  var minutes = (hours - rhours) * 60;
+  var rminutes = Math.round(minutes);
+  if (rhours == 0) {
+    return maybePluralize(rminutes, 'minute');
+  } else if (rminutes == 0) {
+    return maybePluralize(rhours, 'hour');
+  } else {
+    return (
+      maybePluralize(rhours, 'hour') +
+      ' and ' +
+      maybePluralize(rminutes, 'minute')
+    );
   }
 };
 

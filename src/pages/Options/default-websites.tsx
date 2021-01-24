@@ -2,6 +2,7 @@ export const defaultWebsites = [
   { label: 'BBC', value: 'https://www.bbc.com/' },
   { label: 'BuzzFeed', value: 'https://www.buzzfeed.com/' },
   { label: 'CNN', value: 'https://www.cnn.com/' },
+  { label: 'Discord', value: 'https://discord.com/channels/@me' },
   { label: 'ESPN', value: 'https://www.espn.com/' },
   { label: 'Facebook', value: 'https://www.facebook.com/' },
   { label: 'Fox News', value: 'https://www.foxnews.com/' },
