@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
-    "test": "npx mocha test.js"
+    "test": "NODE_ENV=production npm run build; npx mocha test.js"
   },
   "pre-commit": [
     "test"
