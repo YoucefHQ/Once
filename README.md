@@ -17,11 +17,10 @@ This extension uses:
 
 ### Procedures:
 
-1. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
+1. Install [Docker](https://www.docker.com/) to setup a simple NodeJS/Yarn dev environment.
 2. Clone this repository.
-3. Run `npm install` to install the dependencies.
-4. Run `npm start`
-5. Load your extension on Chrome following:
+3. Run `docker-compose up --build` to build and run the container (this will run `yarn start` which will execute `node utils/webserver.js`).
+4. Load your extension on Chrome following:
    1. Access `chrome://extensions/`
    2. Check `Developer mode`
    3. Click on `Load unpacked extension`
@@ -29,18 +28,14 @@ This extension uses:
 
 ## Webpack auto-reload and HRM
 
-Once uses the [webpack server](https://webpack.github.io/docs/webpack-dev-server.html) to development (started with `npm start`) with auto reload feature that reloads the browser automatically every time that you save some file in your editor.
+Once uses the [webpack server](https://webpack.github.io/docs/webpack-dev-server.html) to development (started with `yarn start`) with auto reload feature that reloads the browser automatically every time that you save some file in your editor.
 
-You can run the dev mode on other port if you want. Just specify the env var `port` like this:
-
-```
-$ PORT=6002 npm run start
-```
+You can run the dev mode on other port if you want. Just specify the env var `port` in the `docker-compose.yml` file.
 
 ## Packing
 
 ```
-$ NODE_ENV=production npm run build
+docker-compose run app yarn build
 ```
 
 Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store.
