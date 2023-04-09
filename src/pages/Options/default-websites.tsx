@@ -10,6 +10,7 @@ export const defaultWebsites = [
   { label: 'Instagram', value: 'https://www.instagram.com/' },
   { label: 'LinkedIn', value: 'https://www.linkedin.com/feed/' },
   { label: 'MSN', value: 'https://www.msn.com/' },
+  { label: 'Netflix', value: 'https://www.netflix.com/' },
   { label: 'Pinterest', value: 'https://www.pinterest.com/' },
   { label: 'Quora', value: 'https://www.quora.com/' },
   { label: 'Reddit', value: 'https://www.reddit.com/' },
