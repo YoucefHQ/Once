@@ -1,4 +1,7 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
 const assert = require('assert');
 
 const extensionPath = 'build';
@@ -51,13 +54,12 @@ describe('Test: Once', function () {
       const pages = await browser.pages();
       const page = pages[pages.length - 1];
 
-      const popupPromise = new Promise((x) => page.once('popup', x));
-      const popupPage = await popupPromise; // declare new tab /window,
+      const nav = new Promise((res) => browser.on('targetcreated', res));
 
-      await popupPage.waitForSelector('input[type="email"]');
-      await popupPage.type('input[type="email"]', 'technologiste@gmail.com');
-      await popupPage.click('#identifierNext');
-      await popupPage.close();
+      await page.waitForSelector('#identifierId');
+      await page.type('#identifierId', 'technologiste@gmail.com');
+      await page.click('#identifierNext');
+      await page.close();
     });
   });
 
@@ -107,6 +109,7 @@ describe('Test: Once', function () {
 
 async function boot() {
   browser = await puppeteer.launch({
+    executablePath: '/opt/homebrew/bin/chromium',
     headless: false, // extension are allowed only in head-full mode
     args: [
       `--disable-extensions-except=${extensionPath}`,
@@ -116,6 +119,6 @@ async function boot() {
 
   optionsPage = await browser.newPage();
   await optionsPage.goto(
-    `chrome-extension://colmknodhleimaiamgkdmepcnppffjfp/options.html`
+    `chrome-extension://pehpnecbcgnojaehcffciiaplapajkda/options.html`
   );
 }
