@@ -1,7 +1,7 @@
 {
   "name": "once",
-  "version": "0.0.7",
-  "description": "Take control of your digital life, and stay focused by limiting the time spent on distracting websites.",
+  "version": "0.0.8",
+  "description": "Become more productive and stop wasting time on distracting websites.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.17",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",
     "babel-eslint": "^10.1.0",

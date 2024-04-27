@@ -39,19 +39,19 @@ const Options = ({
               <span>{user.displayName?.split(' ')[0]} ▾</span>
               <ul>
                 <a
-                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
                   target="_blank"
                 >
                   <li>Support</li>
                 </a>
                 <a
-                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
                   target="_blank"
                 >
                   <li>Feedback</li>
                 </a>
                 <a
-                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
+                  href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
                   target="_blank"
                 >
                   <li>Rate Once</li>
@@ -69,9 +69,8 @@ const Options = ({
               </h2>
               <MultiSelectWebsites />
               <p>
-                Once limits your visits to each of these websites to only once
-                per hour. The timer starts when you close the tab of one of
-                these websites and only applies to the websites' homepages.
+                Once limits your visits to each of these websites (homepages
+                only!) to only once per hour.
               </p>
             </div>
             <div className="col-2"></div>
@@ -84,7 +83,7 @@ const Options = ({
               <span>Guest ▾</span>
               <ul>
                 <a
-                  href="https://chrome.google.com/webstore/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
                   target="_blank"
                 >
                   <li>Support</li>
@@ -96,8 +95,8 @@ const Options = ({
               <h1>Once</h1>
               <h2>Welcome to Once!</h2>
               <h3>
-                Take control of your digital life, and stay focused by limiting
-                the time spent on distracting websites.
+                Become more productive and stop wasting time on distracting
+                websites.
               </h3>
               <button onClick={signInWithGoogle}>Sign in with Google</button>
             </div>
@@ -139,7 +138,7 @@ class MultiSelectWebsites extends React.Component {
 
   handleChange = (selectedWebsites: any) => {
     var newSelectedWebsites = [];
-    if (this.state.saveText == 'Saved!') {
+    if (this.state.saveText == 'You are all set!') {
       this.setState({
         saveText: 'Save',
       });
@@ -182,7 +181,7 @@ class MultiSelectWebsites extends React.Component {
     }
 
     this.setState({
-      saveText: 'Saved!',
+      saveText: 'You are all set!',
     });
   };
 
@@ -196,6 +195,7 @@ class MultiSelectWebsites extends React.Component {
           isMulti
           name="colors"
           className="multi-select"
+          placeholder="E.g. Instagram, Reddit, Youtube, etc. "
         />
         <button onClick={() => this.saveBlockedWebsites()}>
           {this.state.saveText}

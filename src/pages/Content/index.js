@@ -22,9 +22,9 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
     timeRemaining +
     ".</h3><button id='onceButton'>Close " +
     websiteName +
-    "</button><p><span id='onceOptions'>Once</span> helps you take control of your digital life, and stay focused.<br><br>So far, Once has saved you " +
+    "</button><p><span id='onceOptions'>Once</span> helps you stop wasting time on distracting websites.<br><br>So far, Once has saved you " +
     blockedTimes +
-    ' times from distracting website visits. Enjoy using Once? <a href="https://chrome.google.com/webstore/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">Leave a review</a> on the Chrome Web Store or <a href="https://twitter.com/intent/tweet?text=Check%20this%20Chrome%20Extension%3A%20Once%20helps%20you%20take%20control%20of%20your%20digital%20life%2C%20and%20stay%20focused%20by%20limiting%20the%20time%20spent%20on%20distracting%20websites%20https%3A%2F%2Fonceforchrome.com%2F" target="_blank">tweet about it</a>.</p></div></div>';
+    ' times from visiting a distracting website. Enjoy using Once? <a href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">Leave a review</a> or <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once" target="_blank">tweet about it</a>.</p></div></div>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceLogo').addEventListener('click', openOptions);
@@ -42,7 +42,7 @@ const showOnboarding = (websiteName) => {
   onceContent.innerHTML =
     "<p><span id='onceOptions'>Once</span> limits your visits of " +
     websiteName +
-    ' to once hour. The timer starts after closing this tab<button id="onceButton">Got it</button></p>';
+    ' to once an hour. The timer will start after closing this tab<button id="onceButton">Got it</button></p>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceOptions').addEventListener('click', openOptions);
