@@ -11,7 +11,7 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
   onceContent.setAttribute('id', 'onceContent');
   onceContent.innerHTML =
     "<div id='onceContainer'><div id='onceRow'><img id='onceLogo' width='80' src='" +
-    chrome.extension.getURL('icon-240.png') +
+    chrome.runtime.getURL('icon-240.png') +
     "'/><h2>You were on " +
     websiteName +
     '<br>' +

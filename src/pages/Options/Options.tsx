@@ -1,110 +1,53 @@
 import React from 'react';
 import Select from 'react-select';
 
-import withFirebaseAuth, {
-  WrappedComponentProps,
-} from 'react-with-firebase-auth';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import firebaseConfig from '../Config/firebaseConfig';
-
 import '../../assets/css/reset.css';
 import '../../assets/css/simple-grid.min.css';
 import './Options.css';
 
 import { defaultWebsites } from './default-websites';
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const firebaseAppAuth = firebaseApp.auth();
-const providers = {
-  googleProvider: new firebase.auth.GoogleAuthProvider(),
-};
-
-const createComponentWithAuth = withFirebaseAuth({
-  providers,
-  firebaseAppAuth,
-});
-
-const Options = ({
-  signInWithGoogle,
-  signOut,
-  user,
-}: WrappedComponentProps) => {
+const Options = () => {
   return (
-    <React.Fragment>
-      {user ? (
-        <>
-          <div className="row">
-            <div className="menu">
-              <span>{user.displayName?.split(' ')[0]} ▾</span>
-              <ul>
-                <a
-                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-                  target="_blank"
-                >
-                  <li>Support</li>
-                </a>
-                <a
-                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-                  target="_blank"
-                >
-                  <li>Feedback</li>
-                </a>
-                <a
-                  href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
-                  target="_blank"
-                >
-                  <li>Rate Once</li>
-                </a>
-                <a href="#" onClick={signOut}>
-                  <li>Sign out</li>
-                </a>
-              </ul>
-            </div>
-            <div className="col-2"></div>
-            <div className="col-8">
-              <h1>Once</h1>
-              <h2 style={{ color: 'black' }}>
-                Select the websites that waste your time.
-              </h2>
-              <MultiSelectWebsites />
-              <p>
-                Once limits your visits to each of these websites (homepages
-                only!) to only once per hour.
-              </p>
-            </div>
-            <div className="col-2"></div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="row">
-            <div className="menu">
-              <span>Guest ▾</span>
-              <ul>
-                <a
-                  href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-                  target="_blank"
-                >
-                  <li>Support</li>
-                </a>
-              </ul>
-            </div>
-            <div className="col-2"></div>
-            <div className="col-8">
-              <h1>Once</h1>
-              <h2>Welcome to Once!</h2>
-              <h3>
-                Become more productive and stop wasting time on distracting
-                websites.
-              </h3>
-              <button onClick={signInWithGoogle}>Sign in with Google</button>
-            </div>
-            <div className="col-2"></div>
-          </div>
-        </>
-      )}
-    </React.Fragment>
+    <>
+      <div className="row">
+        <div className="menu">
+          <ul>
+            <a
+              href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+              target="_blank" rel="noreferrer"
+            >
+              <li>Support</li>
+            </a>
+            <a
+              href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+              target="_blank" rel="noreferrer"
+            >
+              <li>Feedback</li>
+            </a>
+            <a
+              href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
+              target="_blank" rel="noreferrer"
+            >
+              <li>Rate Once</li>
+            </a>
+          </ul>
+        </div>
+        <div className="col-2"></div>
+        <div className="col-8">
+          <h1>Once</h1>
+          <h2 style={{ color: 'black' }}>
+            Select the websites that waste your time.
+          </h2>
+          <MultiSelectWebsites />
+          <p>
+            Once limits your visits to each of these websites (homepages
+            only!) to only once per hour.
+          </p>
+        </div>
+        <div className="col-2"></div>
+      </div>
+    </>
   );
 };
 
@@ -112,33 +55,43 @@ class MultiSelectWebsites extends React.Component {
   state = {
     selectedWebsites: [],
     saveText: 'Save',
+    blockedWebsites: null
   };
 
   componentDidMount() {
-    const blockedWebsites = window.localStorage.getItem('onceBlockedWebsites');
-    if (blockedWebsites) {
-      this.setState({
-        selectedWebsites: JSON.parse(blockedWebsites),
-      });
-    }
+    chrome.storage.local.get('onceBlockedWebsites')
+      .then(({ onceBlockedWebsites }) => {
+        if (onceBlockedWebsites) {
+          const blockedWebsitesObject = defaultWebsites.filter(function (
+            blockedWebsite
+          ) {
+            return onceBlockedWebsites.includes(blockedWebsite.value);
+          });
+          this.setState({
+            selectedWebsites: blockedWebsitesObject,
+          });
+        }
+      })
   }
 
   getBlockedWebsites = () => {
-    const blockedWebsites = window.localStorage.getItem('onceBlockedWebsites');
-    if (!blockedWebsites) return null;
-    else {
-      const blockedWebsitesObject = defaultWebsites.filter(function (
-        blockedWebsite
-      ) {
-        return blockedWebsites.includes(blockedWebsite.value);
-      });
-      return blockedWebsitesObject;
-    }
+    chrome.storage.local.get('onceBlockedWebsites')
+      .then(({ onceBlockedWebsites }) => {
+        if (!onceBlockedWebsites) this.setState({ blockedWebsites: null })
+        else {
+          const blockedWebsitesObject = defaultWebsites.filter(function (
+            blockedWebsite
+          ) {
+            return onceBlockedWebsites.includes(blockedWebsite.value);
+          });
+          this.setState({ blockedWebsites: blockedWebsitesObject })
+        }
+      })
   };
 
   handleChange = (selectedWebsites: any) => {
     var newSelectedWebsites = [];
-    if (this.state.saveText == 'You are all set!') {
+    if (this.state.saveText === 'You are all set!') {
       this.setState({
         saveText: 'Save',
       });
@@ -148,11 +101,11 @@ class MultiSelectWebsites extends React.Component {
       selectedWebsites != null && index < selectedWebsites.length;
       index++
     ) {
-      newSelectedWebsites.push(selectedWebsites[index].value);
-      if (selectedWebsites[index].label == 'Twitter') {
-        newSelectedWebsites.push('https://twitter.com/home');
-      } else if (selectedWebsites[index].label == 'Reddit') {
-        newSelectedWebsites.push('https://old.reddit.com/');
+      newSelectedWebsites.push({ value: selectedWebsites[index].value, label: selectedWebsites[index].label });
+      if (selectedWebsites[index].label === 'Twitter') {
+        newSelectedWebsites.push({ value: 'https://twitter.com/home', label: 'Twitter' });
+      } else if (selectedWebsites[index].label === 'Reddit') {
+        newSelectedWebsites.push({ value: 'https://old.reddit.com/', label: 'Reddit' });
       }
     }
     this.setState({
@@ -161,15 +114,12 @@ class MultiSelectWebsites extends React.Component {
   };
 
   saveBlockedWebsites = () => {
-    window.localStorage.setItem(
-      'onceBlockedWebsites',
-      JSON.stringify(this.state.selectedWebsites)
-    );
+    chrome.storage.local.set({ onceBlockedWebsites: JSON.stringify(this.state.selectedWebsites.map((item: any) => item.value)) })
 
     const previouslyBlockedWebsites = defaultWebsites.filter(
       (blockedWebsite) =>
         !this.state.selectedWebsites.includes(blockedWebsite.value as never) &&
-        window.localStorage.getItem(blockedWebsite.label) !== null
+        chrome.storage.local.get(blockedWebsite.label) != null
     );
     for (
       let index = 0;
@@ -177,7 +127,7 @@ class MultiSelectWebsites extends React.Component {
       index < previouslyBlockedWebsites.length;
       index++
     ) {
-      window.localStorage.removeItem(previouslyBlockedWebsites[index].label);
+      chrome.storage.local.remove(previouslyBlockedWebsites[index].label)
     }
 
     this.setState({
@@ -190,7 +140,7 @@ class MultiSelectWebsites extends React.Component {
       <>
         <Select
           options={defaultWebsites}
-          defaultValue={this.getBlockedWebsites()}
+          value={this.state.selectedWebsites}
           onChange={this.handleChange}
           isMulti
           name="colors"
@@ -205,4 +155,4 @@ class MultiSelectWebsites extends React.Component {
   }
 }
 
-export default createComponentWithAuth(Options);
+export default Options;
