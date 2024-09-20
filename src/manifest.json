@@ -26,6 +26,11 @@
   "content_scripts": [
     {
       "matches": [
+        "https://www.fandom.com/",
+        "https://www.walmart.com/",
+        "https://www.ebay.com/",
+        "https://www.nytimes.com/",
+        "https://www.amazon.com/",
         "https://www.bbc.com/",
         "https://www.buzzfeed.com/",
         "https://www.cnn.com/",
@@ -41,7 +46,7 @@
         "https://www.reddit.com/",
         "https://techmeme.com/",
         "https://www.nytimes.com/",
-        "https://twitter.com/*",
+        "https://x.com/*",
         "https://www.tiktok.com/",
         "https://www.yahoo.com/",
         "https://www.youtube.com/"
@@ -63,7 +68,6 @@
       ],
       "matches": ["<all_urls>"]
     }
-    
   ],
   "manifest_version": 3
 }

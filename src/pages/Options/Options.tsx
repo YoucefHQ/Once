@@ -15,19 +15,22 @@ const Options = () => {
           <ul>
             <a
               href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               <li>Support</li>
             </a>
             <a
               href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               <li>Feedback</li>
             </a>
             <a
               href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               <li>Rate Once</li>
             </a>
@@ -36,13 +39,11 @@ const Options = () => {
         <div className="col-2"></div>
         <div className="col-8">
           <h1>Once</h1>
-          <h2 style={{ color: 'black' }}>
-            Select the websites that waste your time.
-          </h2>
+          <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
           <MultiSelectWebsites />
           <p>
-            Once limits your visits to each of these websites (homepages
-            only!) to only once per hour.
+            Once limits your visits to each of these websites (homepages only!)
+            to only once an hour.
           </p>
         </div>
         <div className="col-2"></div>
@@ -55,11 +56,12 @@ class MultiSelectWebsites extends React.Component {
   state = {
     selectedWebsites: [],
     saveText: 'Save',
-    blockedWebsites: null
+    blockedWebsites: null,
   };
 
   componentDidMount() {
-    chrome.storage.local.get('onceBlockedWebsites')
+    chrome.storage.local
+      .get('onceBlockedWebsites')
       .then(({ onceBlockedWebsites }) => {
         if (onceBlockedWebsites) {
           const blockedWebsitesObject = defaultWebsites.filter(function (
@@ -71,22 +73,23 @@ class MultiSelectWebsites extends React.Component {
             selectedWebsites: blockedWebsitesObject,
           });
         }
-      })
+      });
   }
 
   getBlockedWebsites = () => {
-    chrome.storage.local.get('onceBlockedWebsites')
+    chrome.storage.local
+      .get('onceBlockedWebsites')
       .then(({ onceBlockedWebsites }) => {
-        if (!onceBlockedWebsites) this.setState({ blockedWebsites: null })
+        if (!onceBlockedWebsites) this.setState({ blockedWebsites: null });
         else {
           const blockedWebsitesObject = defaultWebsites.filter(function (
             blockedWebsite
           ) {
             return onceBlockedWebsites.includes(blockedWebsite.value);
           });
-          this.setState({ blockedWebsites: blockedWebsitesObject })
+          this.setState({ blockedWebsites: blockedWebsitesObject });
         }
-      })
+      });
   };
 
   handleChange = (selectedWebsites: any) => {
@@ -101,11 +104,20 @@ class MultiSelectWebsites extends React.Component {
       selectedWebsites != null && index < selectedWebsites.length;
       index++
     ) {
-      newSelectedWebsites.push({ value: selectedWebsites[index].value, label: selectedWebsites[index].label });
-      if (selectedWebsites[index].label === 'Twitter') {
-        newSelectedWebsites.push({ value: 'https://twitter.com/home', label: 'Twitter' });
+      newSelectedWebsites.push({
+        value: selectedWebsites[index].value,
+        label: selectedWebsites[index].label,
+      });
+      if (selectedWebsites[index].label === '𝕏') {
+        newSelectedWebsites.push({
+          value: 'https://x.com/home',
+          label: '𝕏',
+        });
       } else if (selectedWebsites[index].label === 'Reddit') {
-        newSelectedWebsites.push({ value: 'https://old.reddit.com/', label: 'Reddit' });
+        newSelectedWebsites.push({
+          value: 'https://old.reddit.com/',
+          label: 'Reddit',
+        });
       }
     }
     this.setState({
@@ -114,7 +126,11 @@ class MultiSelectWebsites extends React.Component {
   };
 
   saveBlockedWebsites = () => {
-    chrome.storage.local.set({ onceBlockedWebsites: JSON.stringify(this.state.selectedWebsites.map((item: any) => item.value)) })
+    chrome.storage.local.set({
+      onceBlockedWebsites: JSON.stringify(
+        this.state.selectedWebsites.map((item: any) => item.value)
+      ),
+    });
 
     const previouslyBlockedWebsites = defaultWebsites.filter(
       (blockedWebsite) =>
@@ -127,7 +143,7 @@ class MultiSelectWebsites extends React.Component {
       index < previouslyBlockedWebsites.length;
       index++
     ) {
-      chrome.storage.local.remove(previouslyBlockedWebsites[index].label)
+      chrome.storage.local.remove(previouslyBlockedWebsites[index].label);
     }
 
     this.setState({

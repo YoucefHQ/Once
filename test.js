@@ -81,7 +81,7 @@ describe('Test: Once', function () {
       );
       assert.equal(
         onboardingCopy,
-        'Once limits your visits of Hacker News to once an hour. The timer will start after closing this tabGot it',
+        'Once limits your visits to Hacker News to once an hour. The timer will start after closing this tabOK',
         'Onboarding is not shown'
       );
       await hn.close();

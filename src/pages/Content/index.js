@@ -12,19 +12,17 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
   onceContent.innerHTML =
     "<div id='onceContainer'><div id='onceRow'><img id='onceLogo' width='80' src='" +
     chrome.runtime.getURL('icon-240.png') +
-    "'/><h2>You were on " +
+    "'/><h2>You visited " +
     websiteName +
-    '<br>' +
+    ' ' +
     timeAgo +
-    '.</h2><h3>You can visit ' +
+    '</h2><h3>You can visit ' +
     websiteName +
     ' again in ' +
     timeRemaining +
-    ".</h3><button id='onceButton'>Close " +
-    websiteName +
-    "</button><p><span id='onceOptions'>Once</span> helps you stop wasting time on distracting websites.<br><br>So far, Once has saved you " +
+    ".</h3><button id='onceButton'>Close tab</button><p><span id='onceOptions'>Once</span> helps you stop wasting time on distracting websites.<br><br>So far, Once has saved you " +
     blockedTimes +
-    ' times from visiting a distracting website. Enjoy using Once? <a href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">Leave a review</a> or <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once" target="_blank">tweet about it</a>.</p></div></div>';
+    ' times from visiting distracting websites. Enjoy using Once? <a href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">Leave a review</a> or <a href="https://x.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once" target="_blank">tweet about it</a>.</p></div></div>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceLogo').addEventListener('click', openOptions);
@@ -34,15 +32,15 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
 
 const showOnboarding = (websiteName) => {
   const style = document.createElement('style');
-  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);#onceContent{position:fixed;bottom:0;left:0;right:0;text-align:center;background:#8e97fd;width:100%;z-index:9999999999}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;color:#FFF;margin:12px}#onceOptions{text-decoration:underline;cursor:pointer}#onceButton{margin-left:10px;font-family:'DM Sans',sans-serif!important;font-weight:500;font-size:14px;background:transparent;padding:2px 8px;border-radius:32px;border:1px solid white;color:#FFF;cursor:pointer}#onceButton:active,#onceButton:focus{outline:0}`;
+  style.textContent = `@import url(https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap);#onceContent{position:fixed;bottom:0;left:0;right:0;text-align:center;background:#8e97fd;width:100%;z-index:9999999999}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:14px;color:#FFF;margin:8px}#onceOptions{text-decoration:underline;cursor:pointer}#onceButton{margin-left:10px;font-family:'DM Sans',sans-serif!important;font-weight:500;font-size:14px;background:transparent;padding:2px 8px;border-radius:32px;border:1px solid white;color:#FFF;cursor:pointer}#onceButton:active,#onceButton:focus{outline:0}`;
   document.head.append(style);
 
   const onceContent = document.createElement('div');
   onceContent.setAttribute('id', 'onceContent');
   onceContent.innerHTML =
-    "<p><span id='onceOptions'>Once</span> limits your visits of " +
+    "<p><span id='onceOptions'>Once</span> limits your visits to " +
     websiteName +
-    ' to once an hour. The timer will start after closing this tab<button id="onceButton">Got it</button></p>';
+    ' to once an hour. The timer starts after closing this tab<button id="onceButton">OK</button></p>';
   document.body.appendChild(onceContent);
 
   document.getElementById('onceOptions').addEventListener('click', openOptions);
