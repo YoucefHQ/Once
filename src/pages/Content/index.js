@@ -60,6 +60,7 @@ const closeOverlay = () => {
 };
 
 chrome.runtime.sendMessage(
+  // eslint-disable-next-line no-restricted-globals
   { type: 'checkWebsite', url: location.href },
   function (response) {
     if (response.blockWebsite)

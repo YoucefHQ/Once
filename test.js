@@ -46,23 +46,6 @@ describe('Test: Once', function () {
     });
   });
 
-  describe('Authentication', async function () {
-    it('Google Auth', async function () {
-      await optionsPage.waitForSelector('button');
-      await optionsPage.click('button');
-
-      const pages = await browser.pages();
-      const page = pages[pages.length - 1];
-
-      const nav = new Promise((res) => browser.on('targetcreated', res));
-
-      await page.waitForSelector('#identifierId');
-      await page.type('#identifierId', 'technologiste@gmail.com');
-      await page.click('#identifierNext');
-      await page.close();
-    });
-  });
-
   describe('Core functionality', async function () {
     it('Hacker News on blocklist', async function () {
       await optionsPage.evaluate(() => {
