@@ -22,10 +22,10 @@ export const defaultWebsites = [
   { label: 'Youtube', value: 'https://www.youtube.com/' },
 ];
 
-export const getWebsiteName = (url: String) => {
-  if (url == 'https://twitter.com/home') {
+export function getWebsiteName (url: String) {
+  if (url === 'https://twitter.com/home') {
     return 'Twitter';
-  } else if (url == 'https://old.reddit.com/') {
+  } else if (url === 'https://old.reddit.com/') {
     return 'Reddit';
   } else {
     const blockedWebsitesObject = defaultWebsites.filter(function (
@@ -34,6 +34,6 @@ export const getWebsiteName = (url: String) => {
       return blockedWebsite.value === url;
     });
 
-    return blockedWebsitesObject[0].label;
+    return blockedWebsitesObject[0]?.label;
   }
 };

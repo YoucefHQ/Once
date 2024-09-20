@@ -9,87 +9,95 @@ import amplitude from 'amplitude-js';
 amplitude.getInstance().init('bb78085862f7083491987eb4258d2614');
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  if (details.reason == 'install') {
+  if (details.reason === 'install') {
     chrome.runtime.openOptionsPage();
     amplitude.getInstance().logEvent('Installed');
-  } else if (details.reason == 'update') {
+  } else if (details.reason === 'update') {
     amplitude.getInstance().logEvent('Updated');
   }
 });
 
-chrome.browserAction.onClicked.addListener(() => {
+chrome.action.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage();
   amplitude.getInstance().logEvent('Options Visited');
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.type == 'openOptions') {
-    chrome.runtime.openOptionsPage();
-    amplitude.getInstance().logEvent('Options Visited');
-  } else if (request.type == 'closeTab') {
-    chrome.tabs.remove(sender.tab.id);
-    amplitude.getInstance().logEvent('Website Closed');
-  } else if (request.type == 'checkWebsite') {
-    if (isWebsiteBlocked(request.url)) {
-      const websiteName = getWebsiteName(request.url);
-      if (isLastVisitLessThanOneHour(websiteName)) {
-        const blockedTimes = window.localStorage.getItem('blockedTimes');
-        if (blockedTimes === null) {
-          window.localStorage.setItem('blockedTimes', '2');
+  (async () => {
+    if (request.type === 'openOptions') {
+      chrome.runtime.openOptionsPage();
+      amplitude.getInstance().logEvent('Options Visited');
+    } else if (request.type === 'closeTab') {
+      chrome.tabs.remove(sender.tab.id);
+      amplitude.getInstance().logEvent('Website Closed');
+    } else if (request.type === 'checkWebsite') {
+      if (await isWebsiteBlocked(request.url)) {
+        const websiteName = getWebsiteName(request.url);
+        if (await isLastVisitLessThanOneHour(websiteName)) {
+          let storage = await chrome.storage.local.get('blockedTimes');
+          if (storage.blockedTimes == null) {
+            await chrome.storage.local.set({ blockedTimes: '2' });
+          } else {
+            const incrementBlockedTimes = parseInt(storage.blockedTimes) + 1;
+            await chrome.storage.local.set({
+              blockedTimes: incrementBlockedTimes.toString()
+            });
+          }
+  
+          storage = await chrome.storage.local.get('blockedTimes')
+  
+          sendResponse({
+            blockWebsite: true,
+            websiteName: getWebsiteName(request.url),
+            timeAgo: await timeAgo(websiteName),
+            timeRemaining: await timeRemaining(websiteName),
+            blockedTimes: storage.blockedTimes,
+          });
+          amplitude.getInstance().logEvent('Website Blocked');
         } else {
-          const incrementBlockedTimes = parseInt(blockedTimes) + 1;
-          window.localStorage.setItem(
-            'blockedTimes',
-            incrementBlockedTimes.toString()
-          );
+          //const onceOnboarding = window.localStorage.getItem('onceOnboarding');
+          //if (!onceOnboarding) {
+          //window.localStorage.setItem('onceOnboarding', 'done');
+          sendResponse({
+            showOnboarding: true,
+            websiteName: getWebsiteName(request.url),
+          });
+          amplitude.getInstance().logEvent('Onboarding Shown');
+          //}
+          amplitude.getInstance().logEvent('Website Visited');
         }
-
-        sendResponse({
-          blockWebsite: true,
-          websiteName: getWebsiteName(request.url),
-          timeAgo: timeAgo(websiteName),
-          timeRemaining: timeRemaining(websiteName),
-          blockedTimes: window.localStorage.getItem('blockedTimes'),
-        });
-        amplitude.getInstance().logEvent('Website Blocked');
-      } else {
-        //const onceOnboarding = window.localStorage.getItem('onceOnboarding');
-        //if (!onceOnboarding) {
-        //window.localStorage.setItem('onceOnboarding', 'done');
-        sendResponse({
-          showOnboarding: true,
-          websiteName: getWebsiteName(request.url),
-        });
-        amplitude.getInstance().logEvent('Onboarding Shown');
-        //}
-        amplitude.getInstance().logEvent('Website Visited');
       }
+      sendResponse(false);
     }
-    sendResponse(false);
-  }
+  })();
+
+  return true
 });
 
-const isWebsiteBlocked = (url) => {
-  const blockedWebsites = JSON.parse(
-    window.localStorage.getItem('onceBlockedWebsites')
-  );
+async function isWebsiteBlocked (url) {
+  const storage = await chrome.storage.local.get('onceBlockedWebsites')
+
+  if (storage.onceBlockedWebsites == null) return false;
+
+  const blockedWebsites = JSON.parse(storage.onceBlockedWebsites);
   if (!blockedWebsites) return false;
-  return JSON.parse(
-    window.localStorage.getItem('onceBlockedWebsites')
-  ).includes(url);
-};
+  return JSON.parse(storage.onceBlockedWebsites).includes(url);
+}
 
-const isLastVisitLessThanOneHour = (websiteName) => {
-  const lastVisit = window.localStorage.getItem(websiteName);
-  if (!lastVisit) return false;
-  return Date.now() - lastVisit < 60 * 60 * 1000;
-};
+async function isLastVisitLessThanOneHour (websiteName) {
+  const lastVisit = await chrome.storage.local.get([websiteName]);
+  if (!lastVisit[websiteName]) return false;
+  return Date.now() - lastVisit[websiteName] < 60 * 60 * 1000;
+}
 
-const maybePluralize = (count, noun, suffix = 's') =>
-  `${count} ${noun}${count !== 1 ? suffix : ''}`;
+function maybePluralize (count, noun, suffix = 's') {
+  return `${count} ${noun}${count !== 1 ? suffix : ''}`;
+}
 
-const timeAgo = (websiteName) => {
-  const prev = window.localStorage.getItem(websiteName);
+async function timeAgo (websiteName) {
+  let prev = await chrome.storage.local.get([websiteName]);
+  prev = prev[websiteName] ?? 0
+
   var ms_Min = 60 * 1000;
   var ms_Hour = ms_Min * 60;
   var ms_Day = ms_Hour * 24;
@@ -102,10 +110,12 @@ const timeAgo = (websiteName) => {
   } else if (diff < ms_Day) {
     return maybePluralize(Math.round(diff / ms_Hour), 'hour') + ' ago';
   }
-};
+}
 
-const timeRemaining = (websiteName) => {
-  const prev = window.localStorage.getItem(websiteName);
+async function timeRemaining (websiteName) {
+  let prev = await chrome.storage.local.get([websiteName]);
+  prev = prev[websiteName] ?? 0
+
   var ms_Min = 60 * 1000;
   var ms_Hour = ms_Min * 60;
   var diff = Date.now() - prev;
@@ -115,17 +125,17 @@ const timeRemaining = (websiteName) => {
   } else if (diff < ms_Hour) {
     return maybePluralize(60 - Math.round(diff / ms_Min), 'minute');
   }
-};
+}
 
-const timeConvert = (minutes) => {
+function timeConvert (minutes) {
   var num = minutes;
   var hours = num / 60;
   var rhours = Math.floor(hours);
-  var minutes = (hours - rhours) * 60;
+  minutes = (hours - rhours) * 60;
   var rminutes = Math.round(minutes);
-  if (rhours == 0) {
+  if (rhours === 0) {
     return maybePluralize(rminutes, 'minute');
-  } else if (rminutes == 0) {
+  } else if (rminutes === 0) {
     return maybePluralize(rhours, 'hour');
   } else {
     return (
@@ -134,18 +144,29 @@ const timeConvert = (minutes) => {
       maybePluralize(rminutes, 'minute')
     );
   }
-};
+}
 
-const newUrls = [];
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-  if (changeInfo.url) newUrls[tabId] = changeInfo.url;
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
+  let storage = await chrome.storage.local.get('newUrls');
+
+  if (storage.newUrls == null) storage.newUrls = {};
+
+  if (changeInfo.url) {
+    storage.newUrls[tabId] = changeInfo.url;
+
+    chrome.storage.local.set({ newUrls: storage.newUrls })
+  }
 });
 
-chrome.tabs.onRemoved.addListener(function (tabId) {
-  if (isWebsiteBlocked(newUrls[tabId])) {
-    const websiteName = getWebsiteName(newUrls[tabId]);
+chrome.tabs.onRemoved.addListener(async function (tabId) {
+  let storage = await chrome.storage.local.get('newUrls');
 
-    if (!isLastVisitLessThanOneHour(websiteName))
-      window.localStorage.setItem(websiteName, Date.now());
+  if (storage.newUrls == null) storage.newUrls = {};
+
+  if (await isWebsiteBlocked(storage.newUrls[tabId])) {
+    const websiteName = getWebsiteName(storage.newUrls[tabId]);
+
+    if (! await isLastVisitLessThanOneHour(websiteName))
+      chrome.storage.local.set({ [websiteName]: Date.now() });
   }
 });
