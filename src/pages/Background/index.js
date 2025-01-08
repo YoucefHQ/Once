@@ -40,12 +40,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           } else {
             const incrementBlockedTimes = parseInt(storage.blockedTimes) + 1;
             await chrome.storage.local.set({
-              blockedTimes: incrementBlockedTimes.toString()
+              blockedTimes: incrementBlockedTimes.toString(),
             });
           }
-  
-          storage = await chrome.storage.local.get('blockedTimes')
-  
+
+          storage = await chrome.storage.local.get('blockedTimes');
+
           sendResponse({
             blockWebsite: true,
             websiteName: getWebsiteName(request.url),
@@ -71,32 +71,36 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
   })();
 
-  return true
+  return true;
 });
 
-async function isWebsiteBlocked (url) {
-  const storage = await chrome.storage.local.get('onceBlockedWebsites')
+async function isWebsiteBlocked(url) {
+  const storage = await chrome.storage.local.get('onceBlockedWebsites');
 
-  if (storage.onceBlockedWebsites == null) return false;
+  if (!storage.onceBlockedWebsites) return false;
 
   const blockedWebsites = JSON.parse(storage.onceBlockedWebsites);
-  if (!blockedWebsites) return false;
-  return JSON.parse(storage.onceBlockedWebsites).includes(url);
+  const urlDomain = new URL(url).hostname; // Get the domain from the URL
+
+  // Check if the domain is included in the blocked list
+  return blockedWebsites.some(
+    (blocked) => new URL(blocked).hostname === urlDomain
+  );
 }
 
-async function isLastVisitLessThanOneHour (websiteName) {
+async function isLastVisitLessThanOneHour(websiteName) {
   const lastVisit = await chrome.storage.local.get([websiteName]);
   if (!lastVisit[websiteName]) return false;
   return Date.now() - lastVisit[websiteName] < 60 * 60 * 1000;
 }
 
-function maybePluralize (count, noun, suffix = 's') {
+function maybePluralize(count, noun, suffix = 's') {
   return `${count} ${noun}${count !== 1 ? suffix : ''}`;
 }
 
-async function timeAgo (websiteName) {
+async function timeAgo(websiteName) {
   let prev = await chrome.storage.local.get([websiteName]);
-  prev = prev[websiteName] ?? 0
+  prev = prev[websiteName] ?? 0;
 
   var ms_Min = 60 * 1000;
   var ms_Hour = ms_Min * 60;
@@ -112,9 +116,9 @@ async function timeAgo (websiteName) {
   }
 }
 
-async function timeRemaining (websiteName) {
+async function timeRemaining(websiteName) {
   let prev = await chrome.storage.local.get([websiteName]);
-  prev = prev[websiteName] ?? 0
+  prev = prev[websiteName] ?? 0;
 
   var ms_Min = 60 * 1000;
   var ms_Hour = ms_Min * 60;
@@ -127,25 +131,6 @@ async function timeRemaining (websiteName) {
   }
 }
 
-function timeConvert (minutes) {
-  var num = minutes;
-  var hours = num / 60;
-  var rhours = Math.floor(hours);
-  minutes = (hours - rhours) * 60;
-  var rminutes = Math.round(minutes);
-  if (rhours === 0) {
-    return maybePluralize(rminutes, 'minute');
-  } else if (rminutes === 0) {
-    return maybePluralize(rhours, 'hour');
-  } else {
-    return (
-      maybePluralize(rhours, 'hour') +
-      ' and ' +
-      maybePluralize(rminutes, 'minute')
-    );
-  }
-}
-
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
   let storage = await chrome.storage.local.get('newUrls');
 
@@ -154,7 +139,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
   if (changeInfo.url) {
     storage.newUrls[tabId] = changeInfo.url;
 
-    chrome.storage.local.set({ newUrls: storage.newUrls })
+    chrome.storage.local.set({ newUrls: storage.newUrls });
   }
 });
 
@@ -166,7 +151,7 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
   if (await isWebsiteBlocked(storage.newUrls[tabId])) {
     const websiteName = getWebsiteName(storage.newUrls[tabId]);
 
-    if (! await isLastVisitLessThanOneHour(websiteName))
+    if (!(await isLastVisitLessThanOneHour(websiteName)))
       chrome.storage.local.set({ [websiteName]: Date.now() });
   }
 });

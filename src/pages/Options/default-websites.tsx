@@ -2,8 +2,8 @@ export const defaultWebsites = [
   { label: 'Amazon', value: 'https://www.amazon.com/' },
   { label: 'BBC', value: 'https://www.bbc.com/' },
   { label: 'BuzzFeed', value: 'https://www.buzzfeed.com/' },
-  { label: 'CNN', value: 'https://www.cnn.com/' },
-  { label: 'Discord', value: 'https://discord.com/channels/@me' },
+  { label: 'CNBC', value: 'https://www.cnbc.com/' },
+  { label: 'CNN', value: 'https://edition.cnn.com/' },
   { label: 'eBay', value: 'https://www.ebay.com/' },
   { label: 'ESPN', value: 'https://www.espn.com/' },
   { label: 'Facebook', value: 'https://www.facebook.com/' },
@@ -19,26 +19,26 @@ export const defaultWebsites = [
   { label: 'Quora', value: 'https://www.quora.com/' },
   { label: 'Reddit', value: 'https://www.reddit.com/' },
   { label: 'Techmeme', value: 'https://techmeme.com/' },
-  { label: 'The New York Times', value: 'https://www.nytimes.com/' },
   { label: 'Tiktok', value: 'https://www.tiktok.com/' },
   { label: 'Walmart', value: 'https://www.walmart.com/' },
-  { label: '𝕏', value: 'https://x.com/' },
+  { label: 'X', value: 'https://x.com/' },
   { label: 'Yahoo', value: 'https://www.yahoo.com/' },
   { label: 'Youtube', value: 'https://www.youtube.com/' },
 ];
 
-export function getWebsiteName(url: String) {
-  if (url === 'https://x.com/home') {
-    return '𝕏';
-  } else if (url === 'https://old.reddit.com/') {
-    return 'Reddit';
-  } else {
-    const blockedWebsitesObject = defaultWebsites.filter(function (
-      blockedWebsite
-    ) {
-      return blockedWebsite.value === url;
-    });
+export function getWebsiteName(url: string) {
+  const urlDomain = new URL(url).hostname; // Get the domain from the URL
 
-    return blockedWebsitesObject[0]?.label;
+  if (urlDomain === 'x.com' || urlDomain === 'www.x.com') {
+    return 'X';
+  } else if (urlDomain === 'cnbc.com' || urlDomain === 'www.cnbc.com') {
+    return 'CNBC';
   }
+  // Add more domains as needed
+  else if (urlDomain === 'cnn.com' || urlDomain === 'edition.cnn.com') {
+    return 'CNN';
+  }
+
+  // Add other website checks as needed
+  return '';
 }
