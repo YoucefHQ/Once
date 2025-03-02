@@ -3,7 +3,7 @@ export const defaultWebsites = [
   { label: 'BBC', value: 'https://www.bbc.com/' },
   { label: 'BuzzFeed', value: 'https://www.buzzfeed.com/' },
   { label: 'CNBC', value: 'https://www.cnbc.com/' },
-  { label: 'CNN', value: 'https://edition.cnn.com/' },
+  { label: 'CNN', value: 'https://www.cnn.com/' },
   { label: 'eBay', value: 'https://www.ebay.com/' },
   { label: 'ESPN', value: 'https://www.espn.com/' },
   { label: 'Facebook', value: 'https://www.facebook.com/' },
@@ -27,18 +27,19 @@ export const defaultWebsites = [
 ];
 
 export function getWebsiteName(url: string) {
-  const urlDomain = new URL(url).hostname; // Get the domain from the URL
+  const urlDomain = new URL(url).hostname;
 
   if (urlDomain === 'x.com' || urlDomain === 'www.x.com') {
     return 'X';
   } else if (urlDomain === 'cnbc.com' || urlDomain === 'www.cnbc.com') {
     return 'CNBC';
-  }
-  // Add more domains as needed
-  else if (urlDomain === 'cnn.com' || urlDomain === 'edition.cnn.com') {
-    return 'CNN';
-  }
+  } else {
+    const blockedWebsitesObject = defaultWebsites.filter(function (
+      blockedWebsite
+    ) {
+      return blockedWebsite.value === url;
+    });
 
-  // Add other website checks as needed
-  return '';
+    return blockedWebsitesObject[0]?.label;
+  }
 }
