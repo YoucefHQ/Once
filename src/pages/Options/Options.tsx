@@ -7,7 +7,6 @@ interface WebsiteOption {
 }
 
 import '../../assets/css/reset.css';
-import '../../assets/css/simple-grid.min.css';
 import './Options.css';
 
 import { defaultWebsites } from './default-websites';
@@ -15,43 +14,39 @@ import { defaultWebsites } from './default-websites';
 const Options = () => {
   return (
     <>
-      <div className="row">
-        <div className="menu">
-          <ul>
-            <a
-              href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <li>Support</li>
-            </a>
-            <a
-              href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <li>Feedback</li>
-            </a>
-            <a
-              href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <li>Rate Once</li>
-            </a>
-          </ul>
-        </div>
-        <div className="col-2"></div>
-        <div className="col-8">
-          <h1>Once</h1>
-          <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
-          <MultiSelectWebsites />
-          <p>
-            Once limits your visits to each of these websites (homepages only!)
-            to only once an hour.
-          </p>
-        </div>
-        <div className="col-2"></div>
+      <div className="menu">
+        <ul>
+          <a
+            href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <li>Support</li>
+          </a>
+          <a
+            href="https://chromewebstore.google.com/detail/cmkicojchpmgdakmdjfhjjibbfmfplep/support"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <li>Feedback</li>
+          </a>
+          <a
+            href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <li>Rate Once</li>
+          </a>
+        </ul>
+      </div>
+      <div className="content">
+        <h1>Once</h1>
+        <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
+        <MultiSelectWebsites />
+        <p>
+          Once limits your visits to each of these websites (homepages only!)
+          to only once an hour.
+        </p>
       </div>
     </>
   );
