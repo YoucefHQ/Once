@@ -1,6 +1,11 @@
 import React from 'react';
 import Select from 'react-select';
 
+interface WebsiteOption {
+  label: string;
+  value: string;
+}
+
 import '../../assets/css/reset.css';
 import '../../assets/css/simple-grid.min.css';
 import './Options.css';
@@ -156,7 +161,7 @@ class MultiSelectWebsites extends React.Component {
   render() {
     return (
       <>
-        <Select
+        <Select<WebsiteOption, true>
           options={defaultWebsites}
           value={this.state.selectedWebsites}
           onChange={this.handleChange}
