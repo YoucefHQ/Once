@@ -7,45 +7,23 @@ var WebpackDevServer = require('webpack-dev-server'),
   webpack = require('webpack'),
   config = require('../webpack.config'),
   env = require('./env'),
-  path = require('path');
+  path = require('path'),
+  net = require('net');
 
-var options = config.chromeExtensionBoilerplate || {};
-var excludeEntriesToHotReload = options.notHotReload || [];
-
-for (var entryName in config.entry) {
-  if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
-    config.entry[entryName] = [
-      'webpack-dev-server/client?http://localhost:' + env.PORT,
-      'webpack/hot/dev-server',
-    ].concat(config.entry[entryName]);
-  }
+function findFreePort(startPort) {
+  return new Promise(function (resolve, reject) {
+    var server = net.createServer();
+    server.listen(startPort, function () {
+      var port = server.address().port;
+      server.close(function () {
+        resolve(port);
+      });
+    });
+    server.on('error', function () {
+      resolve(findFreePort(startPort + 1));
+    });
+  });
 }
-
-// HMR plugin is automatically added by webpack-dev-server when hot: true
-
-delete config.chromeExtensionBoilerplate;
-
-var compiler = webpack(config);
-
-var server = new WebpackDevServer(
-  {
-    server: 'http',
-    client: false,
-    port: env.PORT,
-    static: {
-      directory: path.join(__dirname, '../build'),
-    },
-    devMiddleware: {
-      writeToDisk: true,
-      publicPath: `http://localhost:${env.PORT}`,
-    },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    allowedHosts: 'all',
-  },
-  compiler
-);
 
 var browserLaunched = false;
 
@@ -93,8 +71,47 @@ async function launchBrowser() {
 }
 
 (async () => {
+  var preferredPort = process.env.PORT || env.PORT;
+  var port = await findFreePort(preferredPort);
+
+  var options = config.chromeExtensionBoilerplate || {};
+  var excludeEntriesToHotReload = options.notHotReload || [];
+
+  for (var entryName in config.entry) {
+    if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
+      config.entry[entryName] = [
+        'webpack-dev-server/client?http://localhost:' + port,
+        'webpack/hot/dev-server',
+      ].concat(config.entry[entryName]);
+    }
+  }
+
+  delete config.chromeExtensionBoilerplate;
+
+  var compiler = webpack(config);
+
+  var server = new WebpackDevServer(
+    {
+      server: 'http',
+      client: false,
+      port: port,
+      static: {
+        directory: path.join(__dirname, '../build'),
+      },
+      devMiddleware: {
+        writeToDisk: true,
+        publicPath: 'http://localhost:' + port,
+      },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      allowedHosts: 'all',
+    },
+    compiler
+  );
+
   await server.start();
-  console.log('Dev server is listening on port ' + env.PORT);
+  console.log('Dev server is listening on port ' + port);
 
   // Launch browser after the first successful build
   compiler.hooks.done.tap('LaunchBrowser', function (stats) {
