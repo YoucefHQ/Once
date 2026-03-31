@@ -60,15 +60,33 @@
   "permissions": ["tabs", "storage"],
   "web_accessible_resources": [
     {
-      "resources": [
-        "icon-16.png",
-        "icon-24.png",
-        "icon-32.png",
-        "icon-48.png",
-        "icon-128.png",
-        "icon-240.png"
-      ],
-      "matches": ["<all_urls>"]
+      "resources": ["icon-240.png"],
+      "matches": [
+        "https://*.fandom.com/*",
+        "https://*.walmart.com/*",
+        "https://*.ebay.com/*",
+        "https://*.nytimes.com/*",
+        "https://*.amazon.com/*",
+        "https://*.bbc.com/*",
+        "https://*.buzzfeed.com/*",
+        "https://*.cnbc.com/*",
+        "https://*.cnn.com/*",
+        "https://*.espn.com/*",
+        "https://*.facebook.com/*",
+        "https://*.foxnews.com/*",
+        "https://news.ycombinator.com/*",
+        "https://*.instagram.com/*",
+        "https://*.linkedin.com/*",
+        "https://*.msn.com/*",
+        "https://*.pinterest.com/*",
+        "https://*.quora.com/*",
+        "https://*.reddit.com/*",
+        "https://techmeme.com/*",
+        "https://x.com/*",
+        "https://*.tiktok.com/*",
+        "https://*.yahoo.com/*",
+        "https://*.youtube.com/*"
+      ]
     }
   ],
   "manifest_version": 3
