@@ -4,30 +4,66 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes) => {
   document.head.append(style);
 
   const onceOverlay = document.createElement('div');
-  onceOverlay.setAttribute('id', 'onceOverlay');
+  onceOverlay.id = 'onceOverlay';
   document.body.appendChild(onceOverlay);
 
   const onceContent = document.createElement('div');
-  onceContent.setAttribute('id', 'onceContent');
-  onceContent.innerHTML =
-    "<div id='onceContainer'><div id='onceRow'><img id='onceLogo' width='80' src='" +
-    chrome.runtime.getURL('icon-240.png') +
-    "'/><h2>You visited " +
-    websiteName +
-    ' ' +
-    timeAgo +
-    '</h2><h3>You can visit ' +
-    websiteName +
-    ' again in ' +
-    timeRemaining +
-    ".</h3><button id='onceButton'>Close tab</button><p><span id='onceOptions'>Once</span> helps you stop wasting time on distracting websites.<br><br>Once blocked you " +
-    blockedTimes +
-    ' times from distracting websites. Support Once with <a href="https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews" target="_blank">a review</a> or <a href="https://x.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once" target="_blank">a tweet</a>.</p></div></div>';
-  document.body.appendChild(onceContent);
+  onceContent.id = 'onceContent';
 
-  document.getElementById('onceLogo').addEventListener('click', openOptions);
-  document.getElementById('onceOptions').addEventListener('click', openOptions);
-  document.getElementById('onceButton').addEventListener('click', closeTab);
+  const container = document.createElement('div');
+  container.id = 'onceContainer';
+  const row = document.createElement('div');
+  row.id = 'onceRow';
+
+  const logo = document.createElement('img');
+  logo.id = 'onceLogo';
+  logo.width = 80;
+  logo.src = chrome.runtime.getURL('icon-240.png');
+  logo.addEventListener('click', openOptions);
+
+  const heading = document.createElement('h2');
+  heading.textContent = 'You visited ' + websiteName + ' ' + timeAgo;
+
+  const subheading = document.createElement('h3');
+  subheading.textContent = 'You can visit ' + websiteName + ' again in ' + timeRemaining + '.';
+
+  const button = document.createElement('button');
+  button.id = 'onceButton';
+  button.textContent = 'Close tab';
+  button.addEventListener('click', closeTab);
+
+  const info = document.createElement('p');
+  const onceLink = document.createElement('span');
+  onceLink.id = 'onceOptions';
+  onceLink.textContent = 'Once';
+  onceLink.addEventListener('click', openOptions);
+
+  const reviewLink = document.createElement('a');
+  reviewLink.href = 'https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews';
+  reviewLink.target = '_blank';
+  reviewLink.textContent = 'a review';
+
+  const tweetLink = document.createElement('a');
+  tweetLink.href = 'https://x.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once';
+  tweetLink.target = '_blank';
+  tweetLink.textContent = 'a tweet';
+
+  info.append(
+    onceLink,
+    ' helps you stop wasting time on distracting websites.',
+    document.createElement('br'),
+    document.createElement('br'),
+    'Once blocked you ' + blockedTimes + ' times from distracting websites. Support Once with ',
+    reviewLink,
+    ' or ',
+    tweetLink,
+    '.'
+  );
+
+  row.append(logo, heading, subheading, button, info);
+  container.appendChild(row);
+  onceContent.appendChild(container);
+  document.body.appendChild(onceContent);
 };
 
 const showOnboarding = (websiteName) => {
@@ -36,15 +72,27 @@ const showOnboarding = (websiteName) => {
   document.head.append(style);
 
   const onceContent = document.createElement('div');
-  onceContent.setAttribute('id', 'onceContent');
-  onceContent.innerHTML =
-    "<p><span id='onceOptions'>Once</span> limits your visits to " +
-    websiteName +
-    ' to once an hour. The timer starts after closing this tab<button id="onceButton">OK</button></p>';
-  document.body.appendChild(onceContent);
+  onceContent.id = 'onceContent';
 
-  document.getElementById('onceOptions').addEventListener('click', openOptions);
-  document.getElementById('onceButton').addEventListener('click', closeOverlay);
+  const p = document.createElement('p');
+  const onceLink = document.createElement('span');
+  onceLink.id = 'onceOptions';
+  onceLink.textContent = 'Once';
+  onceLink.addEventListener('click', openOptions);
+
+  const button = document.createElement('button');
+  button.id = 'onceButton';
+  button.textContent = 'OK';
+  button.addEventListener('click', closeOverlay);
+
+  p.append(
+    onceLink,
+    ' limits your visits to ' + websiteName + ' to once an hour. The timer starts after closing this tab',
+    button
+  );
+
+  onceContent.appendChild(p);
+  document.body.appendChild(onceContent);
 };
 
 const openOptions = () => {
