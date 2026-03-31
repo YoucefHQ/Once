@@ -1,12 +1,17 @@
 {
   "name": "Once - Block distracting websites",
   "description": "Become more productive and stop wasting time on distracting websites.",
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "background": {
     "service_worker": "background.bundle.js",
     "type": "module"
   },
+  "minimum_chrome_version": "102",
   "action": {
+    "default_title": "Once - Block distracting websites",
     "default_icon": {
       "16": "icon-16.png",
       "24": "icon-24.png",
