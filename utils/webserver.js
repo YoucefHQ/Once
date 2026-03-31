@@ -74,18 +74,9 @@ async function launchBrowser() {
   var preferredPort = process.env.PORT || env.PORT;
   var port = await findFreePort(preferredPort);
 
-  var options = config.chromeExtensionBoilerplate || {};
-  var excludeEntriesToHotReload = options.notHotReload || [];
-
-  for (var entryName in config.entry) {
-    if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
-      config.entry[entryName] = [
-        'webpack-dev-server/client?http://localhost:' + port,
-        'webpack/hot/dev-server',
-      ].concat(config.entry[entryName]);
-    }
-  }
-
+  // Don't inject HMR client into entry points — Chrome extensions block
+  // eval() via Content Security Policy, which the HMR runtime requires.
+  // Instead, we just use writeToDisk and let the developer reload the extension.
   delete config.chromeExtensionBoilerplate;
 
   var compiler = webpack(config);
@@ -93,6 +84,8 @@ async function launchBrowser() {
   var server = new WebpackDevServer(
     {
       server: 'http',
+      hot: false,
+      liveReload: false,
       client: false,
       port: port,
       static: {
