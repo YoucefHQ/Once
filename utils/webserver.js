@@ -36,11 +36,13 @@ async function launchBrowser() {
 
   var browser = await puppeteer.launch({
     headless: false,
+    defaultViewport: null,
     args: [
       '--disable-extensions-except=' + extensionPath,
       '--load-extension=' + extensionPath,
       '--no-first-run',
       '--disable-default-apps',
+      '--window-size=1280,900',
     ],
   });
 
