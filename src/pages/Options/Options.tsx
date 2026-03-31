@@ -64,10 +64,11 @@ class MultiSelectWebsites extends React.Component {
       .get('onceBlockedWebsites')
       .then(({ onceBlockedWebsites }) => {
         if (onceBlockedWebsites) {
+          const websites = JSON.parse(onceBlockedWebsites as string) as string[];
           const blockedWebsitesObject = defaultWebsites.filter(function (
             blockedWebsite
           ) {
-            return onceBlockedWebsites.includes(blockedWebsite.value);
+            return websites.includes(blockedWebsite.value);
           });
           this.setState({
             selectedWebsites: blockedWebsitesObject,
@@ -82,10 +83,11 @@ class MultiSelectWebsites extends React.Component {
       .then(({ onceBlockedWebsites }) => {
         if (!onceBlockedWebsites) this.setState({ blockedWebsites: null });
         else {
+          const websites = JSON.parse(onceBlockedWebsites as string) as string[];
           const blockedWebsitesObject = defaultWebsites.filter(function (
             blockedWebsite
           ) {
-            return onceBlockedWebsites.includes(blockedWebsite.value);
+            return websites.includes(blockedWebsite.value);
           });
           this.setState({ blockedWebsites: blockedWebsitesObject });
         }

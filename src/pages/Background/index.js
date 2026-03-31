@@ -5,31 +5,23 @@ import '../../assets/img/icon-32.png';
 import '../../assets/img/icon-24.png';
 import '../../assets/img/icon-16.png';
 import { getWebsiteName } from './../Options/default-websites';
-import amplitude from 'amplitude-js';
-amplitude.getInstance().init('bb78085862f7083491987eb4258d2614');
 
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
     chrome.runtime.openOptionsPage();
-    amplitude.getInstance().logEvent('Installed');
-  } else if (details.reason === 'update') {
-    amplitude.getInstance().logEvent('Updated');
   }
 });
 
 chrome.action.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage();
-  amplitude.getInstance().logEvent('Options Visited');
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   (async () => {
     if (request.type === 'openOptions') {
       chrome.runtime.openOptionsPage();
-      amplitude.getInstance().logEvent('Options Visited');
     } else if (request.type === 'closeTab') {
       chrome.tabs.remove(sender.tab.id);
-      amplitude.getInstance().logEvent('Website Closed');
     } else if (request.type === 'checkWebsite') {
       if (await isWebsiteBlocked(request.url)) {
         const websiteName = getWebsiteName(request.url);
@@ -53,18 +45,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             timeRemaining: await timeRemaining(websiteName),
             blockedTimes: storage.blockedTimes,
           });
-          amplitude.getInstance().logEvent('Website Blocked');
         } else {
-          //const onceOnboarding = window.localStorage.getItem('onceOnboarding');
-          //if (!onceOnboarding) {
-          //window.localStorage.setItem('onceOnboarding', 'done');
           sendResponse({
             showOnboarding: true,
             websiteName: getWebsiteName(request.url),
           });
-          amplitude.getInstance().logEvent('Onboarding Shown');
-          //}
-          amplitude.getInstance().logEvent('Website Visited');
         }
       }
       sendResponse(false);

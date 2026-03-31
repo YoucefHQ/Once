@@ -10,6 +10,19 @@ delete config.chromeExtensionBoilerplate;
 
 config.mode = 'production';
 
-webpack(config, function (err) {
+webpack(config, function (err, stats) {
   if (err) throw err;
+  if (stats.hasErrors()) {
+    console.error(
+      stats.toString({
+        colors: true,
+        errors: true,
+        warnings: false,
+        modules: false,
+        chunks: false,
+        assets: false,
+      })
+    );
+    process.exit(1);
+  }
 });
