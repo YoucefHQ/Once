@@ -7,49 +7,111 @@ var WebpackDevServer = require('webpack-dev-server'),
   webpack = require('webpack'),
   config = require('../webpack.config'),
   env = require('./env'),
-  path = require('path');
+  path = require('path'),
+  net = require('net');
 
-var options = config.chromeExtensionBoilerplate || {};
-var excludeEntriesToHotReload = options.notHotReload || [];
-
-for (var entryName in config.entry) {
-  if (excludeEntriesToHotReload.indexOf(entryName) === -1) {
-    config.entry[entryName] = [
-      'webpack-dev-server/client?http://localhost:' + env.PORT,
-      'webpack/hot/dev-server',
-    ].concat(config.entry[entryName]);
-  }
+function findFreePort(startPort) {
+  return new Promise(function (resolve, reject) {
+    var server = net.createServer();
+    server.listen(startPort, function () {
+      var port = server.address().port;
+      server.close(function () {
+        resolve(port);
+      });
+    });
+    server.on('error', function () {
+      resolve(findFreePort(startPort + 1));
+    });
+  });
 }
 
-config.plugins = [new webpack.HotModuleReplacementPlugin()].concat(
-  config.plugins || []
-);
+var browserLaunched = false;
 
-delete config.chromeExtensionBoilerplate;
+async function launchBrowser() {
+  if (browserLaunched) return;
+  browserLaunched = true;
 
-var compiler = webpack(config);
+  var puppeteer = require('puppeteer');
+  var extensionPath = path.resolve(__dirname, '../build');
 
-var server = new WebpackDevServer(
-  {
-    https: false,
-    client: false,
-    port: env.PORT,
-    static: {
-      directory: path.join(__dirname, '../build'),
+  var browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    args: [
+      '--disable-extensions-except=' + extensionPath,
+      '--load-extension=' + extensionPath,
+      '--no-first-run',
+      '--disable-default-apps',
+      '--window-size=1280,900',
+    ],
+  });
+
+  // Wait for the extension service worker to register
+  var swTarget = await browser.waitForTarget(
+    function (t) {
+      return (
+        t.type() === 'service_worker' &&
+        t.url().includes('background.bundle.js')
+      );
     },
-    devMiddleware: {
-      writeToDisk: true,
-      publicPath: `http://localhost:${env.PORT}`,
-    },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    allowedHosts: 'all',
-  },
-  compiler
-);
+    { timeout: 10000 }
+  );
+  var extensionId = new URL(swTarget.url()).hostname;
+
+  // Open the options page
+  var page = (await browser.pages())[0] || (await browser.newPage());
+  await page.goto('chrome-extension://' + extensionId + '/options.html');
+
+  console.log('Browser launched with extension loaded (ID: ' + extensionId + ')');
+  console.log('Reload the extension at chrome://extensions after making changes');
+
+  // Exit the dev server when the browser is closed
+  browser.on('disconnected', function () {
+    console.log('Browser closed, shutting down dev server...');
+    process.exit(0);
+  });
+}
 
 (async () => {
+  var preferredPort = process.env.PORT || env.PORT;
+  var port = await findFreePort(preferredPort);
+
+  // Don't inject HMR client into entry points — Chrome extensions block
+  // eval() via Content Security Policy, which the HMR runtime requires.
+  // Instead, we just use writeToDisk and let the developer reload the extension.
+  delete config.chromeExtensionBoilerplate;
+
+  var compiler = webpack(config);
+
+  var server = new WebpackDevServer(
+    {
+      server: 'http',
+      hot: false,
+      liveReload: false,
+      client: false,
+      port: port,
+      static: {
+        directory: path.join(__dirname, '../build'),
+      },
+      devMiddleware: {
+        writeToDisk: true,
+        publicPath: 'http://localhost:' + port,
+      },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      allowedHosts: 'all',
+    },
+    compiler
+  );
+
   await server.start();
-  console.log(`Dev server is listening on port ${env.PORT}`);
+  console.log('Dev server is listening on port ' + port);
+
+  // Launch browser after the first successful build
+  compiler.hooks.done.tap('LaunchBrowser', function (stats) {
+    if (!stats.hasErrors()) {
+      launchBrowser();
+    }
+  });
 })();

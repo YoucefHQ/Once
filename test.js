@@ -1,107 +1,134 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-
-puppeteer.use(StealthPlugin());
+const puppeteer = require('puppeteer');
 const assert = require('assert');
+const path = require('path');
 
-const extensionPath = 'build';
+const extensionPath = path.resolve(__dirname, 'build');
 let optionsPage = null;
 let browser = null;
+let extensionId = null;
 
 describe('Test: Once', function () {
-  this.timeout(20000000); // default is 2 seconds and that may not be enough to boot browsers and pages.
+  this.timeout(30000);
   before(async function () {
     await boot();
   });
 
-  describe('Installation', async function () {
-    it('Welcome Copy', async function () {
-      const welcomeCopy = await optionsPage.$eval(
+  describe('Options page', function () {
+    it('shows the heading', async function () {
+      const heading = await optionsPage.$eval(
+        'h1',
+        (element) => element.textContent
+      );
+      assert.equal(heading, 'Once');
+    });
+    it('shows the subtitle', async function () {
+      const subtitle = await optionsPage.$eval(
         'h2',
         (element) => element.textContent
       );
-      assert.equal(
-        welcomeCopy,
-        'Welcome to Once!',
-        'Welcome message is not shown'
-      );
+      assert.equal(subtitle, 'Which websites waste your time?');
     });
-    it('Sign in Button', async function () {
-      const signInButton = await optionsPage.$eval(
+    it('shows the Save button', async function () {
+      const buttonText = await optionsPage.$eval(
         'button',
         (element) => element.textContent
       );
-      assert.equal(
-        signInButton,
-        'Sign in with Google',
-        'Sign in button is not shown'
-      );
-    });
-    it('Guest Copy', async function () {
-      const guestCopy = await optionsPage.$eval(
-        'span',
-        (element) => element.textContent
-      );
-      assert.equal(guestCopy, 'Guest ▾', 'Guest is not shown');
+      assert.equal(buttonText, 'Save');
     });
   });
 
-  describe('Core functionality', async function () {
-    it('Hacker News on blocklist', async function () {
-      await optionsPage.evaluate(() => {
-        localStorage.setItem(
-          'onceBlockedWebsites',
-          '["https://news.ycombinator.com/"]'
-        );
+  describe('Core functionality', function () {
+    it('adds Hacker News to blocklist via chrome.storage', async function () {
+      const sw = await getServiceWorker();
+      await sw.evaluate(() => {
+        return chrome.storage.local.set({
+          onceBlockedWebsites: JSON.stringify([
+            'https://news.ycombinator.com/',
+          ]),
+        });
       });
     });
-    it('Visiting Hacker News', async function () {
+    it('shows onboarding on first visit to blocked site', async function () {
       const hn = await browser.newPage();
-      await hn.goto('https://news.ycombinator.com/');
-      const onboardingCopy = await hn.$eval(
-        '#onceContent',
+      await hn.goto('https://news.ycombinator.com/', {
+        waitUntil: 'domcontentloaded',
+      });
+      await hn.waitForSelector('#onceContent', { timeout: 5000 });
+      const onboardingText = await hn.$eval(
+        '#onceContent p',
         (element) => element.textContent
       );
-      assert.equal(
-        onboardingCopy,
-        'Once limits your visits to Hacker News to once an hour. The timer will start after closing this tabOK',
-        'Onboarding is not shown'
+      assert.ok(
+        onboardingText.includes('Once'),
+        'Onboarding banner should mention Once'
+      );
+      assert.ok(
+        onboardingText.includes('Hacker News'),
+        'Onboarding banner should mention the website name'
       );
       await hn.close();
     });
-    it('Blocking Hacker News', async function () {
+    it('blocks the site on subsequent visit', async function () {
       const hn = await browser.newPage();
-      await hn.goto('https://news.ycombinator.com/');
-      const blockedButtonCopy = await hn.$eval(
+      await hn.goto('https://news.ycombinator.com/', {
+        waitUntil: 'domcontentloaded',
+      });
+      await hn.waitForSelector('#onceButton', { timeout: 5000 });
+      const buttonText = await hn.$eval(
         '#onceButton',
         (element) => element.textContent
       );
-      assert.equal(
-        blockedButtonCopy,
-        'Close Hacker News',
-        'Close Button is not shown'
-      );
+      assert.equal(buttonText, 'Close tab');
       await hn.close();
     });
   });
 
   after(async function () {
-    await browser.close();
+    if (browser) await browser.close();
   });
 });
 
+async function getServiceWorker() {
+  const swTarget = await browser.waitForTarget(
+    (t) =>
+      t.type() === 'service_worker' &&
+      t.url().startsWith(`chrome-extension://${extensionId}/`),
+    { timeout: 5000 }
+  );
+  return await swTarget.worker();
+}
+
 async function boot() {
   browser = await puppeteer.launch({
-    executablePath: '/opt/homebrew/bin/chromium',
-    headless: false, // extension are allowed only in head-full mode
+    headless: false, // extensions are allowed only in head-full mode
     args: [
       `--disable-extensions-except=${extensionPath}`,
       `--load-extension=${extensionPath}`,
+      '--no-first-run',
+      '--disable-default-apps',
     ],
   });
 
-  optionsPage = await browser.newPage();
-  await optionsPage.goto(
-    `chrome-extension://pehpnecbcgnojaehcffciiaplapajkda/options.html`
+  // Wait for our extension's service worker to register
+  const swTarget = await browser.waitForTarget(
+    (t) =>
+      t.type() === 'service_worker' &&
+      t.url().includes('background.bundle.js'),
+    { timeout: 5000 }
   );
+  extensionId = new URL(swTarget.url()).hostname;
+
+  // The extension auto-opens the options page on install; find that tab
+  await new Promise((r) => setTimeout(r, 500));
+  const pages = await browser.pages();
+  optionsPage = pages.find((p) =>
+    p.url().includes(`chrome-extension://${extensionId}/options.html`)
+  );
+  if (!optionsPage) {
+    optionsPage = await browser.newPage();
+    await optionsPage.goto(
+      `chrome-extension://${extensionId}/options.html`,
+      { waitUntil: 'domcontentloaded' }
+    );
+  }
 }

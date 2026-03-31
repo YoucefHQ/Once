@@ -2,48 +2,72 @@
 
 # Once
 
-Once is a Chrome Extension that helps users limit the usage of time-consuming websites.
+Once is a Chrome extension that limits your visits to distracting websites to once per hour. Instead of blocking sites entirely, Once lets you visit them — but only once an hour, helping you stay productive without going cold turkey.
 
-This extension uses:
+## How it works
 
-- [React 17](https://reactjs.org)
+1. Pick the websites that waste your time (Reddit, X, YouTube, etc.)
+2. Visit one of those sites and Once starts a one-hour timer
+3. If you try to visit the same site again within the hour, Once blocks it and shows you how much time is left
+
+## Install
+
+[Get Once on the Chrome Web Store](https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep)
+
+## Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) >= 18
+
+### Setup
+
+```bash
+git clone https://github.com/YoucefHQ/Once.git
+cd Once
+npm install
+```
+
+### Run in development
+
+```bash
+npm start
+```
+
+Then load the extension in Chrome:
+
+1. Go to `chrome://extensions/`
+2. Enable **Developer mode**
+3. Click **Load unpacked**
+4. Select the `build` folder
+
+### Run tests
+
+```bash
+npm test
+```
+
+Tests use [Puppeteer](https://pptr.dev/) to launch Chrome with the extension loaded and verify the options page, onboarding flow, and site blocking.
+
+### Build for production
+
+```bash
+NODE_ENV=production npm run build
+```
+
+The `build` folder will contain the extension ready for the Chrome Web Store.
+
+## Tech stack
+
+- [React 19](https://react.dev/)
+- [TypeScript 5](https://www.typescriptlang.org/)
 - [Webpack 5](https://webpack.js.org/)
-- [React Hot Loader](https://github.com/gaearon/react-hot-loader)
-- [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app)
-- [Prettier](https://prettier.io/)
-- [TypeScript](https://www.typescriptlang.org/)
+- [Sass](https://sass-lang.com/)
+- Chrome Extension Manifest V3
 
-## Installing and Running
+## License
 
-### Procedures:
-
-1. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
-2. Clone this repository.
-3. Run `npm install` to install the dependencies.
-4. Run `npm start`
-5. Load your extension on Chrome following:
-   1. Access `chrome://extensions/`
-   2. Check `Developer mode`
-   3. Click on `Load unpacked extension`
-   4. Select the `build` folder.
-
-## Webpack auto-reload and HRM
-
-Once uses the [webpack server](https://webpack.github.io/docs/webpack-dev-server.html) to development (started with `npm start`) with auto reload feature that reloads the browser automatically every time that you save some file in your editor.
-
-You can run the dev mode on other port if you want. Just specify the env var `port` like this:
-
-```
-$ PORT=6002 npm run start
-```
-
-## Packing
-
-```
-$ NODE_ENV=production npm run build
-```
-
-Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store.
+[MIT](LICENSE)
 
 ---
 
