@@ -34,12 +34,7 @@ npm install
 npm start
 ```
 
-Then load the extension in Chrome:
-
-1. Go to `chrome://extensions/`
-2. Enable **Developer mode**
-3. Click **Load unpacked**
-4. Select the `build` folder
+This builds the extension, launches Chrome with it loaded, and opens the options page automatically. Webpack watches for file changes and rebuilds — reload the extension at `chrome://extensions` to pick up updates.
 
 ### Run tests
 
