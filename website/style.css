@@ -28,7 +28,7 @@ img {
 
 /* Layout */
 .container {
-  max-width: 960px;
+  max-width: 1032px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -112,10 +112,20 @@ img {
   fill: currentColor;
 }
 
+.social-proof {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #696871;
+}
+
+.chrome-rating {
+  color: #f5a623;
+}
+
 .oss-badge {
   display: inline-flex;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 8px;
   font-size: 14px;
   color: #696871;
 }
@@ -134,6 +144,32 @@ img {
   line-height: 24px;
   color: #696871;
   text-align: center;
+}
+
+/* Screenshots */
+.screenshots {
+  padding: 32px 0;
+}
+
+.screenshots h2 {
+  font-weight: 700;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.screenshots-track {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  gap: 12px;
+}
+
+.screenshots-track img {
+  height: 200px;
+  width: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Product Hunt */
@@ -233,6 +269,10 @@ img {
   .features {
     flex-direction: column;
     gap: 16px;
+  }
+
+  .screenshots-track img {
+    height: 120px;
   }
 
   .footer-inner {

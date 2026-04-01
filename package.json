@@ -1,7 +1,7 @@
 {
   "name": "once",
   "version": "0.2.0",
-  "description": "Become more productive and stop wasting time on distracting websites.",
+  "description": "Block distracting websites and limit visits to once per hour.",
   "license": "MIT",
   "repository": {
     "type": "git",
