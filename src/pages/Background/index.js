@@ -51,8 +51,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             websiteName: getWebsiteName(request.url),
           });
         }
+      } else {
+        sendResponse(false);
       }
-      sendResponse(false);
     }
   })();
 
@@ -60,12 +61,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 async function isWebsiteBlocked(url) {
+  if (!url) return false;
+
   const storage = await chrome.storage.local.get('onceBlockedWebsites');
 
   if (!storage.onceBlockedWebsites) return false;
 
   const blockedWebsites = JSON.parse(storage.onceBlockedWebsites);
-  const urlDomain = new URL(url).hostname; // Get the domain from the URL
+
+  let urlDomain;
+  try {
+    urlDomain = new URL(url).hostname;
+  } catch {
+    return false;
+  }
 
   // Check if the domain is included in the blocked list
   return blockedWebsites.some(
@@ -116,14 +125,14 @@ async function timeRemaining(websiteName) {
   }
 }
 
-chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo) {
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
   let storage = await chrome.storage.local.get('newUrls');
 
   if (storage.newUrls == null) storage.newUrls = {};
 
-  if (changeInfo.url) {
-    storage.newUrls[tabId] = changeInfo.url;
-
+  const url = changeInfo.url || tab.url;
+  if (url) {
+    storage.newUrls[tabId] = url;
     chrome.storage.local.set({ newUrls: storage.newUrls });
   }
 });

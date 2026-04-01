@@ -29,17 +29,12 @@ export const defaultWebsites = [
 export function getWebsiteName(url: string) {
   const urlDomain = new URL(url).hostname;
 
-  if (urlDomain === 'x.com' || urlDomain === 'www.x.com') {
-    return 'X';
-  } else if (urlDomain === 'cnbc.com' || urlDomain === 'www.cnbc.com') {
-    return 'CNBC';
-  } else {
-    const blockedWebsitesObject = defaultWebsites.filter(function (
-      blockedWebsite
-    ) {
-      return blockedWebsite.value === url;
-    });
+  const match = defaultWebsites.find(
+    (w) => new URL(w.value).hostname === urlDomain
+  );
+  if (match) return match.label;
 
-    return blockedWebsitesObject[0]?.label;
-  }
+  // Fallback: capitalize the domain name (strip "www.")
+  const name = urlDomain.replace(/^www\./, '');
+  return name.charAt(0).toUpperCase() + name.slice(1).split('.')[0];
 }
