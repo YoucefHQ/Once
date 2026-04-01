@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: #19191b;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Layout */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.hero {
+  padding: 48px 0 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-logo {
+  width: 80px;
+  height: 80px;
+  background-image: url(logo.png);
+  background-size: 80px 80px;
+  background-repeat: no-repeat;
+}
+
+.hero h2 {
+  font-weight: 700;
+  font-size: 64px;
+  letter-spacing: -1px;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.hero h3 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+  color: #696871;
+  margin-bottom: 24px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 16px 40px;
+  border-radius: 32px;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.btn-primary {
+  background: #8e97fd;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: rgba(142, 151, 253, 0.85);
+}
+
+.btn-github {
+  background: #24292e;
+  color: #fff;
+}
+
+.btn-github:hover {
+  background: #2f363d;
+}
+
+.btn-github svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.oss-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #696871;
+}
+
+/* Features */
+.features {
+  display: flex;
+  gap: 32px;
+  padding: 32px 0;
+}
+
+.features p {
+  flex: 1;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #696871;
+  text-align: center;
+}
+
+/* Product Hunt */
+.ph {
+  text-align: center;
+  padding: 32px 0;
+}
+
+/* FAQ */
+.faq {
+  padding: 32px 0;
+}
+
+.faq h2 {
+  font-weight: 700;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.faq-item h3 {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.faq-item p {
+  font-size: 16px;
+  line-height: 24px;
+  color: #696871;
+}
+
+.faq-item a {
+  color: #8e97fd;
+}
+
+.faq-item a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+  padding: 32px 0;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: #696871;
+}
+
+.footer-links a:hover {
+  color: #8e97fd;
+}
+
+.footer-copy {
+  font-size: 14px;
+  color: #696871;
+}
+
+/* Selection */
+::selection {
+  background: rgba(142, 151, 253, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .hero h2 {
+    font-size: 40px;
+  }
+
+  .hero h3 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .features {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}

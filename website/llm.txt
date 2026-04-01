@@ -1,0 +1,20 @@
+# Once
+
+> Love your work, not your distractions.
+
+Once is a free, open-source browser extension that helps you stay productive by limiting visits to distracting websites to once per hour.
+
+## How it works
+
+- Add websites you find distracting (social media, news, etc.)
+- Once allows your first visit each hour, then blocks revisits
+- After an hour, the cycle resets
+
+## Key details
+
+- Browser: Chrome, Brave, and other Chromium-based browsers
+- License: MIT
+- Source code: https://github.com/YoucefHQ/Once
+- Chrome Web Store: https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep
+- Website: https://onceforchrome.com
+- Privacy: No data collection. All data stays local in your browser.
