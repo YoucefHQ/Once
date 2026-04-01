@@ -57,7 +57,6 @@ The `build` folder will contain the extension ready for the Chrome Web Store.
 - [React 19](https://react.dev/)
 - [TypeScript 5](https://www.typescriptlang.org/)
 - [Webpack 5](https://webpack.js.org/)
-- [Sass](https://sass-lang.com/)
 - Chrome Extension Manifest V3
 
 ## License
