@@ -7,6 +7,8 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin');
 
+var pkg = require('./package.json');
+
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 var alias = {};
@@ -105,9 +107,9 @@ var options = {
             // generates the manifest file using the package.json informations
             return Buffer.from(
               JSON.stringify({
-                description: process.env.npm_package_description,
-                version: process.env.npm_package_version,
                 ...JSON.parse(content.toString()),
+                description: pkg.description,
+                version: pkg.version,
               })
             );
           },
