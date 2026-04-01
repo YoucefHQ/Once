@@ -14,9 +14,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@types/chrome": "^0.1.38",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-select": "^5.10.2"
@@ -30,6 +27,9 @@
     "mocha/serialize-javascript": "^7.0.5"
   },
   "devDependencies": {
+    "@types/chrome": "^0.1.38",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",

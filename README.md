@@ -47,7 +47,7 @@ Tests use [Puppeteer](https://pptr.dev/) to launch Chrome with the extension loa
 ### Build for production
 
 ```bash
-NODE_ENV=production npm run build
+npm run build
 ```
 
 The `build` folder will contain the extension ready for the Chrome Web Store.
@@ -62,7 +62,3 @@ The `build` folder will contain the extension ready for the Chrome Web Store.
 ## License
 
 [MIT](LICENSE)
-
----
-
-Youcef Es-skouri | [Website](https://cef.im)
