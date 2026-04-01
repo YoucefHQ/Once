@@ -49,21 +49,13 @@ var options = {
   module: {
     rules: [
       {
-        // look for .css or .scss files
-        test: /\.(css|scss)$/,
-        // in the `src` directory
+        test: /\.css$/,
         use: [
           {
             loader: 'style-loader',
           },
           {
             loader: 'css-loader',
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
           },
         ],
       },
@@ -83,14 +75,7 @@ var options = {
       { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ },
       {
         test: /\.(js|jsx)$/,
-        use: [
-          {
-            loader: 'source-map-loader',
-          },
-          {
-            loader: 'babel-loader',
-          },
-        ],
+        loader: 'babel-loader',
         exclude: /node_modules/,
       },
     ],
@@ -99,7 +84,7 @@ var options = {
     alias: alias,
     extensions: fileExtensions
       .map((extension) => '.' + extension)
-      .concat(['.js', '.jsx', '.ts', '.tsx', '.css']),
+      .concat(['.js', '.jsx', '.ts', '.tsx']),
   },
   plugins: [
     new webpack.ProgressPlugin(),

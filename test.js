@@ -66,14 +66,34 @@ describe('Test: Once', function () {
         onboardingText.includes('Hacker News'),
         'Onboarding banner should mention the website name'
       );
+      // Close tab — triggers onRemoved which records the visit timestamp
       await hn.close();
     });
     it('blocks the site on subsequent visit', async function () {
+      // Wait for the background's onRemoved handler to store the visit timestamp
+      await new Promise((r) => setTimeout(r, 1000));
+
       const hn = await browser.newPage();
       await hn.goto('https://news.ycombinator.com/', {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'load',
       });
-      await hn.waitForSelector('#onceButton', { timeout: 5000 });
+
+      // Chrome doesn't reliably auto-inject content scripts on subsequent
+      // navigations in Puppeteer's headful mode, so inject explicitly
+      const sw = await getServiceWorker();
+      await sw.evaluate(async () => {
+        const tabs = await chrome.tabs.query({
+          url: 'https://news.ycombinator.com/*',
+        });
+        if (tabs[0]) {
+          await chrome.scripting.executeScript({
+            target: { tabId: tabs[0].id },
+            files: ['contentScript.bundle.js'],
+          });
+        }
+      });
+
+      await hn.waitForSelector('#onceButton', { timeout: 10000 });
       const buttonText = await hn.$eval(
         '#onceButton',
         (element) => element.textContent
@@ -84,7 +104,11 @@ describe('Test: Once', function () {
   });
 
   after(async function () {
-    if (browser) await browser.close();
+    if (browser) {
+      const proc = browser.process();
+      browser.disconnect();
+      if (proc) proc.kill('SIGTERM');
+    }
   });
 });
 

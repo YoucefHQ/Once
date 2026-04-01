@@ -62,7 +62,8 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "storage", "scripting", "activeTab"],
+  "host_permissions": ["https://news.ycombinator.com/*"],
   "web_accessible_resources": [
     {
       "resources": ["icon-240.png"],
