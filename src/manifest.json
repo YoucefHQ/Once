@@ -1,4 +1,5 @@
 {
+  "version": "0.2.0",
   "name": "Once - Block distracting websites",
   "description": "Become more productive and stop wasting time on distracting websites.",
   "options_ui": {

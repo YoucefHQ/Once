@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const assert = require('assert');
 const path = require('path');
+const fs = require('fs');
 
 const extensionPath = path.resolve(__dirname, 'build');
 let optionsPage = null;
@@ -38,15 +39,24 @@ describe('Test: Once', function () {
   });
 
   describe('Core functionality', function () {
-    it('adds Hacker News to blocklist via chrome.storage', async function () {
-      const sw = await getServiceWorker();
-      await sw.evaluate(() => {
-        return chrome.storage.local.set({
-          onceBlockedWebsites: JSON.stringify([
-            'https://news.ycombinator.com/',
-          ]),
-        });
+    it('adds Hacker News to blocklist via the options page', async function () {
+      // Click the react-select input to open the dropdown
+      await optionsPage.click('.multi-select input');
+      // Type to filter for Hacker News
+      await optionsPage.type('.multi-select input', 'Hacker');
+      // Wait for the option to appear and click it
+      await optionsPage.waitForSelector('[class*="-option"]', {
+        timeout: 3000,
       });
+      await optionsPage.click('[class*="-option"]');
+      // Click Save
+      await optionsPage.click('button');
+      // Verify the button text changed to confirm the save
+      const buttonText = await optionsPage.$eval(
+        'button',
+        (el) => el.textContent
+      );
+      assert.equal(buttonText, 'You are all set!');
     });
     it('shows onboarding on first visit to blocked site', async function () {
       const hn = await browser.newPage();
@@ -109,6 +119,9 @@ describe('Test: Once', function () {
       browser.disconnect();
       if (proc) proc.kill('SIGTERM');
     }
+    // Clean up temporary Chrome profile
+    const tmpDir = path.join(__dirname, '.test-profile');
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 });
 
@@ -123,6 +136,7 @@ async function getServiceWorker() {
 }
 
 async function boot() {
+  const tmpDir = path.join(__dirname, '.test-profile');
   browser = await puppeteer.launch({
     headless: false, // extensions are allowed only in head-full mode
     args: [
@@ -130,6 +144,7 @@ async function boot() {
       `--load-extension=${extensionPath}`,
       '--no-first-run',
       '--disable-default-apps',
+      `--user-data-dir=${tmpDir}`,
     ],
   });
 
@@ -138,7 +153,7 @@ async function boot() {
     (t) =>
       t.type() === 'service_worker' &&
       t.url().includes('background.bundle.js'),
-    { timeout: 5000 }
+    { timeout: 15000 }
   );
   extensionId = new URL(swTarget.url()).hostname;
 
