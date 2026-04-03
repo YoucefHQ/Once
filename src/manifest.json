@@ -63,7 +63,7 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "storage", "scripting", "activeTab"],
+  "permissions": ["tabs", "storage", "activeTab"],
   "host_permissions": ["https://news.ycombinator.com/*"],
   "web_accessible_resources": [
     {

@@ -88,21 +88,6 @@ describe('Test: Once', function () {
         waitUntil: 'load',
       });
 
-      // Chrome doesn't reliably auto-inject content scripts on subsequent
-      // navigations in Puppeteer's headful mode, so inject explicitly
-      const sw = await getServiceWorker();
-      await sw.evaluate(async () => {
-        const tabs = await chrome.tabs.query({
-          url: 'https://news.ycombinator.com/*',
-        });
-        if (tabs[0]) {
-          await chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            files: ['contentScript.bundle.js'],
-          });
-        }
-      });
-
       await hn.waitForSelector('#onceButton', { timeout: 10000 });
       const buttonText = await hn.$eval(
         '#onceButton',
