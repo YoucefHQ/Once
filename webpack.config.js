@@ -120,7 +120,7 @@ var options = {
       patterns: [
         {
           from: 'src/assets/css',
-          to: path.join(__dirname, 'website'),
+          to: path.join(__dirname, 'public'),
           force: true,
         },
       ],
@@ -129,7 +129,7 @@ var options = {
       patterns: [
         {
           from: 'src/pages/Options/Options.css',
-          to: path.join(__dirname, 'website'),
+          to: path.join(__dirname, 'public'),
           force: true,
         },
       ],
