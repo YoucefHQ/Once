@@ -1,29 +1,10 @@
-// Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
 process.env.ASSET_PATH = '/';
 
-var WebpackDevServer = require('webpack-dev-server'),
-  webpack = require('webpack'),
-  config = require('../webpack.config'),
-  env = require('./env'),
-  path = require('path'),
-  net = require('net');
-
-function findFreePort(startPort) {
-  return new Promise(function (resolve, reject) {
-    var server = net.createServer();
-    server.listen(startPort, function () {
-      var port = server.address().port;
-      server.close(function () {
-        resolve(port);
-      });
-    });
-    server.on('error', function () {
-      resolve(findFreePort(startPort + 1));
-    });
-  });
-}
+var esbuild = require('esbuild');
+var path = require('path');
+var { copyAssets, getEntryPoints, root } = require('./build');
 
 var browserLaunched = false;
 
@@ -32,7 +13,7 @@ async function launchBrowser() {
   browserLaunched = true;
 
   var puppeteer = require('puppeteer');
-  var extensionPath = path.resolve(__dirname, '../build');
+  var extensionPath = path.join(root, 'build');
 
   var browser = await puppeteer.launch({
     headless: false,
@@ -62,56 +43,50 @@ async function launchBrowser() {
   var page = (await browser.pages())[0] || (await browser.newPage());
   await page.goto('chrome-extension://' + extensionId + '/options.html');
 
-  console.log('Browser launched with extension loaded (ID: ' + extensionId + ')');
-  console.log('Reload the extension at chrome://extensions after making changes');
+  console.log(
+    'Browser launched with extension loaded (ID: ' + extensionId + ')'
+  );
+  console.log(
+    'Reload the extension at chrome://extensions after making changes'
+  );
 
   // Exit the dev server when the browser is closed
   browser.on('disconnected', function () {
-    console.log('Browser closed, shutting down dev server...');
+    console.log('Browser closed, shutting down...');
     process.exit(0);
   });
 }
 
-(async () => {
-  var preferredPort = process.env.PORT || env.PORT;
-  var port = await findFreePort(preferredPort);
+async function start() {
+  await copyAssets();
 
-  // Don't inject HMR client into entry points — Chrome extensions block
-  // eval() via Content Security Policy, which the HMR runtime requires.
-  // Instead, we just use writeToDisk and let the developer reload the extension.
-  delete config.chromeExtensionBoilerplate;
-
-  var compiler = webpack(config);
-
-  var server = new WebpackDevServer(
-    {
-      server: 'http',
-      hot: false,
-      liveReload: false,
-      client: false,
-      port: port,
-      static: {
-        directory: path.join(__dirname, '../build'),
-      },
-      devMiddleware: {
-        writeToDisk: true,
-        publicPath: 'http://localhost:' + port,
-      },
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-      allowedHosts: 'all',
-    },
-    compiler
+  // Create esbuild contexts for watch mode
+  var contexts = await Promise.all(
+    getEntryPoints().map(function (opts) {
+      return esbuild.context(opts);
+    })
   );
 
-  await server.start();
-  console.log('Dev server is listening on port ' + port);
+  // Initial build
+  await Promise.all(
+    contexts.map(function (ctx) {
+      return ctx.rebuild();
+    })
+  );
+  console.log('Initial build complete');
 
-  // Launch browser after the first successful build
-  compiler.hooks.done.tap('LaunchBrowser', function (stats) {
-    if (!stats.hasErrors()) {
-      launchBrowser();
-    }
-  });
-})();
+  // Watch for changes
+  await Promise.all(
+    contexts.map(function (ctx) {
+      return ctx.watch();
+    })
+  );
+  console.log('Watching for changes...');
+
+  await launchBrowser();
+}
+
+start().catch(function (err) {
+  console.error(err);
+  process.exit(1);
+});

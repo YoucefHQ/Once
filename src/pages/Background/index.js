@@ -1,9 +1,3 @@
-import '../../assets/img/icon-240.png';
-import '../../assets/img/icon-128.png';
-import '../../assets/img/icon-48.png';
-import '../../assets/img/icon-32.png';
-import '../../assets/img/icon-24.png';
-import '../../assets/img/icon-16.png';
 import { getWebsiteName } from './../Options/default-websites';
 
 chrome.runtime.onInstalled.addListener(function (details) {
