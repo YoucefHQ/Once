@@ -64,6 +64,7 @@ img {
   line-height: 32px;
   color: #696871;
   margin-bottom: 24px;
+  max-width: 760px;
 }
 
 .hero-actions {
@@ -122,28 +123,50 @@ img {
   color: #f5a623;
 }
 
-.oss-badge {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 8px;
-  font-size: 14px;
-  color: #696871;
-}
-
 /* Features */
 .features {
-  display: flex;
-  gap: 32px;
   padding: 32px 0;
 }
 
-.features p {
+.features h2 {
+  font-weight: 700;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.steps {
+  display: flex;
+  gap: 32px;
+}
+
+.step {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #8e97fd;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.step p {
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   color: #696871;
-  text-align: center;
 }
 
 /* Screenshots */
@@ -266,7 +289,7 @@ img {
     line-height: 26px;
   }
 
-  .features {
+  .steps {
     flex-direction: column;
     gap: 16px;
   }

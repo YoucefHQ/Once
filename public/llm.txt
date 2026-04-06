@@ -1,14 +1,14 @@
 # Once
 
-> Love your work, not your distractions.
+> Stop wasting time on distracting websites.
 
-Once is a free, open-source browser extension that helps you stay productive by limiting visits to distracting websites to once per hour.
+Once is a free Chrome extension that limits time on distracting websites by letting you visit them only once per hour.
 
 ## How it works
 
-- Add websites you find distracting (social media, news, etc.)
-- Once allows your first visit each hour, then blocks revisits
-- After an hour, the cycle resets
+1. Install Once for free and add the websites you find distracting like X, Reddit, or Instagram.
+2. Once allows you to visit those websites once per hour and blocks you until the hour resets.
+3. The timer starts when you close the tab of one of these websites and resets automatically every hour.
 
 ## Key details
 
