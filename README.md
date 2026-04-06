@@ -34,7 +34,7 @@ npm install
 npm start
 ```
 
-This builds the extension, launches Chrome with it loaded, and opens the options page automatically. Webpack watches for file changes and rebuilds — reload the extension at `chrome://extensions` to pick up updates.
+This builds the extension, launches Chrome with it loaded, and opens the options page automatically. esbuild watches for file changes and rebuilds — reload the extension at `chrome://extensions` to pick up updates.
 
 ### Run tests
 
@@ -56,7 +56,7 @@ The `build` folder will contain the extension ready for the Chrome Web Store.
 
 - [React 19](https://react.dev/)
 - [TypeScript 5](https://www.typescriptlang.org/)
-- [Webpack 5](https://webpack.js.org/)
+- [esbuild](https://esbuild.github.io/)
 - Chrome Extension Manifest V3
 
 ## License
