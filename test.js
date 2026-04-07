@@ -95,6 +95,73 @@ describe('Test: Once', function () {
     });
   });
 
+  describe('Aggressive mode', function () {
+    it('shows the toggle defaulting to off', async function () {
+      const toggleExists = await optionsPage.$('.toggle-switch');
+      assert.ok(toggleExists, 'Toggle switch should exist on options page');
+      const isActive = await optionsPage.$eval('.toggle-switch', (el) =>
+        el.classList.contains('active')
+      );
+      assert.equal(isActive, false, 'Toggle should default to off');
+    });
+
+    it('enables aggressive mode via toggle click', async function () {
+      await optionsPage.click('.toggle-switch');
+      const isActive = await optionsPage.$eval('.toggle-switch', (el) =>
+        el.classList.contains('active')
+      );
+      assert.equal(isActive, true, 'Toggle should be active after click');
+    });
+
+    it('shows aggressive onboarding on first visit', async function () {
+      // Clear any existing timestamps so this counts as a fresh visit
+      const sw = await getServiceWorker();
+      await sw.evaluate(() =>
+        chrome.storage.local.remove([
+          'Hacker News',
+          'onceGlobalTimestamp',
+          'onceGlobalTriggerSite',
+        ])
+      );
+
+      const hn = await browser.newPage();
+      await hn.goto('https://news.ycombinator.com/', {
+        waitUntil: 'domcontentloaded',
+      });
+      await hn.waitForSelector('#onceContent', { timeout: 5000 });
+      const onboardingText = await hn.$eval(
+        '#onceContent p',
+        (el) => el.textContent
+      );
+      assert.ok(
+        onboardingText.includes('all blocked websites'),
+        'Aggressive onboarding should mention all blocked websites'
+      );
+      assert.ok(
+        onboardingText.includes('timer has started'),
+        'Aggressive onboarding should say timer has started'
+      );
+      await hn.close();
+    });
+
+    it('blocks the site on subsequent visit in aggressive mode', async function () {
+      await new Promise((r) => setTimeout(r, 1000));
+
+      const hn = await browser.newPage();
+      await hn.goto('https://news.ycombinator.com/', {
+        waitUntil: 'load',
+      });
+
+      await hn.waitForSelector('#onceButton', { timeout: 10000 });
+      const buttonText = await hn.$eval(
+        '#onceButton',
+        (el) => el.textContent
+      );
+      assert.equal(buttonText, 'Close tab');
+      await hn.close();
+    });
+  });
+
   after(async function () {
     if (browser) {
       const proc = browser.process();
