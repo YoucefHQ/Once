@@ -19,7 +19,47 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     } else if (request.type === 'checkWebsite') {
       if (await isWebsiteBlocked(request.url)) {
         const websiteName = getWebsiteName(request.url);
-        if (await isLastVisitLessThanOneHour(websiteName)) {
+        const aggressive = await isAggressiveModeEnabled();
+
+        if (aggressive) {
+          if (await isGlobalTimerActive()) {
+            let storage = await chrome.storage.local.get('blockedTimes');
+            if (storage.blockedTimes == null) {
+              await chrome.storage.local.set({ blockedTimes: '2' });
+            } else {
+              const incrementBlockedTimes =
+                parseInt(storage.blockedTimes) + 1;
+              await chrome.storage.local.set({
+                blockedTimes: incrementBlockedTimes.toString(),
+              });
+            }
+
+            storage = await chrome.storage.local.get([
+              'blockedTimes',
+              'onceGlobalTriggerSite',
+            ]);
+
+            sendResponse({
+              blockWebsite: true,
+              websiteName: websiteName,
+              triggerSite: storage.onceGlobalTriggerSite,
+              timeAgo: await timeAgo('onceGlobalTimestamp'),
+              timeRemaining: await timeRemaining('onceGlobalTimestamp'),
+              blockedTimes: storage.blockedTimes,
+            });
+          } else {
+            await chrome.storage.local.set({
+              onceGlobalTimestamp: Date.now(),
+              onceGlobalTriggerSite: websiteName,
+            });
+
+            sendResponse({
+              showOnboarding: true,
+              websiteName: websiteName,
+              aggressiveMode: true,
+            });
+          }
+        } else if (await isLastVisitLessThanOneHour(websiteName)) {
           let storage = await chrome.storage.local.get('blockedTimes');
           if (storage.blockedTimes == null) {
             await chrome.storage.local.set({ blockedTimes: '2' });
@@ -34,7 +74,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
           sendResponse({
             blockWebsite: true,
-            websiteName: getWebsiteName(request.url),
+            websiteName: websiteName,
             timeAgo: await timeAgo(websiteName),
             timeRemaining: await timeRemaining(websiteName),
             blockedTimes: storage.blockedTimes,
@@ -42,7 +82,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         } else {
           sendResponse({
             showOnboarding: true,
-            websiteName: getWebsiteName(request.url),
+            websiteName: websiteName,
           });
         }
       } else {
@@ -53,6 +93,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   return true;
 });
+
+async function isAggressiveModeEnabled() {
+  const storage = await chrome.storage.local.get('onceAggressiveMode');
+  return storage.onceAggressiveMode === true;
+}
+
+async function isGlobalTimerActive() {
+  const storage = await chrome.storage.local.get('onceGlobalTimestamp');
+  if (!storage.onceGlobalTimestamp) return false;
+  return Date.now() - storage.onceGlobalTimestamp < 60 * 60 * 1000;
+}
 
 async function isWebsiteBlocked(url) {
   if (!url) return false;
@@ -139,7 +190,9 @@ chrome.tabs.onRemoved.addListener(async function (tabId) {
   if (await isWebsiteBlocked(storage.newUrls[tabId])) {
     const websiteName = getWebsiteName(storage.newUrls[tabId]);
 
-    if (!(await isLastVisitLessThanOneHour(websiteName)))
-      chrome.storage.local.set({ [websiteName]: Date.now() });
+    if (!(await isAggressiveModeEnabled())) {
+      if (!(await isLastVisitLessThanOneHour(websiteName)))
+        chrome.storage.local.set({ [websiteName]: Date.now() });
+    }
   }
 });

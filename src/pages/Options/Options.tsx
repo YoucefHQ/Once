@@ -12,6 +12,22 @@ import './Options.css';
 import { defaultWebsites } from './default-websites';
 
 const Options = () => {
+  const [aggressiveMode, setAggressiveMode] = React.useState(false);
+
+  React.useEffect(() => {
+    chrome.storage.local
+      .get('onceAggressiveMode')
+      .then(({ onceAggressiveMode }) => {
+        if (onceAggressiveMode) setAggressiveMode(true);
+      });
+  }, []);
+
+  const toggleAggressiveMode = () => {
+    const newValue = !aggressiveMode;
+    setAggressiveMode(newValue);
+    chrome.storage.local.set({ onceAggressiveMode: newValue });
+  };
+
   return (
     <>
       <div className="menu">
@@ -47,6 +63,24 @@ const Options = () => {
           Once limits your visits to each of these websites (homepages only!)
           to only once an hour.
         </p>
+        <div className="toggle-section">
+          <div className="toggle-row">
+            <div className="toggle-label">
+              <span className="toggle-title">Aggressive mode</span>
+              <span className="toggle-description">
+                Visiting any blocked site starts the timer for all blocked sites
+              </span>
+            </div>
+            <div
+              className={`toggle-switch ${aggressiveMode ? 'active' : ''}`}
+              onClick={toggleAggressiveMode}
+              role="switch"
+              aria-checked={aggressiveMode}
+            >
+              <div className="toggle-knob" />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
