@@ -46,14 +46,16 @@ describe('Test: Once', function () {
         timeout: 3000,
       });
       await optionsPage.click('[class*="-option"]');
-      // Close the dropdown
+      // Close the dropdown (stays open with closeMenuOnSelect={false})
       await optionsPage.keyboard.press('Escape');
-      // Verify Hacker News was selected (auto-saved)
-      const selectedText = await optionsPage.$eval(
-        '[class*="-multiValue"]',
+      // Click Save
+      await optionsPage.click('button');
+      // Verify the button text changed to confirm the save
+      const buttonText = await optionsPage.$eval(
+        'button',
         (el) => el.textContent
       );
-      assert.ok(selectedText.includes('Hacker News'));
+      assert.ok(buttonText.includes('You are all set'));
     });
     it('shows onboarding on first visit to blocked site', async function () {
       const hn = await browser.newPage();
@@ -113,6 +115,8 @@ describe('Test: Once', function () {
       });
       await optionsPage.click('[class*="-option"]');
       await optionsPage.keyboard.press('Escape');
+      // Click Save
+      await optionsPage.click('button');
     });
 
     it('enables aggressive mode via toggle click', async function () {

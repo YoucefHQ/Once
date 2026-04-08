@@ -94,9 +94,12 @@ class MultiSelectWebsites extends React.Component {
       <>
         <Select<WebsiteOption, true>
           options={defaultWebsites}
-          value={this.state.selectedWebsites}
+          value={this.state.selectedWebsites.filter((w: any) =>
+            defaultWebsites.some((dw) => dw.value === w.value)
+          )}
           onChange={this.handleChange}
           isMulti
+          closeMenuOnSelect={false}
           name="colors"
           className="multi-select"
           placeholder="E.g. Instagram, Reddit, Youtube, etc. "
