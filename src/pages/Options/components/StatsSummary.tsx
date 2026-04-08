@@ -4,7 +4,6 @@ interface StatsSummaryProps {
   streak: number;
   longestStreak: number;
   totalBlocks: number;
-  timeSaved: string;
 }
 
 function formatTimeSaved(totalBlocks: number): string {

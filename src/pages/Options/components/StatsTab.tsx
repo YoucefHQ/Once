@@ -47,7 +47,6 @@ const StatsTab: React.FC = () => {
         streak={stats.streak.current}
         longestStreak={stats.streak.longest}
         totalBlocks={stats.totalBlocks}
-        timeSaved=""
       />
       <SiteBreakdown siteBlocks={stats.siteBlocks} />
       <TrendChart dailyLog={stats.dailyLog} />

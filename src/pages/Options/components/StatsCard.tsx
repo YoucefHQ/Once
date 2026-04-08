@@ -228,8 +228,10 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats, onClose }) => {
       const a = document.createElement('a');
       a.href = url;
       a.download = `once-stats-${format}.png`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
     }, 'image/png');
   };
 
