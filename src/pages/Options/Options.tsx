@@ -95,31 +95,28 @@ class MultiSelectWebsites extends React.Component {
   };
 
   handleChange = (selectedWebsites: any) => {
-    var newSelectedWebsites = [];
+    var newSelectedWebsites: any[] = [];
     if (this.state.saveText === 'You are all set!') {
       this.setState({
         saveText: 'Save',
       });
     }
+    const seen = new Set<string>();
     for (
       let index = 0;
       selectedWebsites != null && index < selectedWebsites.length;
       index++
     ) {
-      newSelectedWebsites.push({
-        value: selectedWebsites[index].value,
-        label: selectedWebsites[index].label,
-      });
-      if (selectedWebsites[index].label === '𝕏') {
-        newSelectedWebsites.push({
-          value: 'https://x.com/home',
-          label: '𝕏',
-        });
-      } else if (selectedWebsites[index].label === 'Reddit') {
-        newSelectedWebsites.push({
-          value: 'https://old.reddit.com/',
-          label: 'Reddit',
-        });
+      const { value, label } = selectedWebsites[index];
+      if (seen.has(value)) continue;
+      seen.add(value);
+      newSelectedWebsites.push({ value, label });
+      if (label === 'X' && !seen.has('https://x.com/home')) {
+        seen.add('https://x.com/home');
+        newSelectedWebsites.push({ value: 'https://x.com/home', label: 'X' });
+      } else if (label === 'Reddit' && !seen.has('https://old.reddit.com/')) {
+        seen.add('https://old.reddit.com/');
+        newSelectedWebsites.push({ value: 'https://old.reddit.com/', label: 'Reddit' });
       }
     }
     this.setState({
@@ -158,9 +155,12 @@ class MultiSelectWebsites extends React.Component {
       <>
         <Select<WebsiteOption, true>
           options={defaultWebsites}
-          value={this.state.selectedWebsites}
+          value={this.state.selectedWebsites.filter((w: any) =>
+            defaultWebsites.some((dw) => dw.value === w.value)
+          )}
           onChange={this.handleChange}
           isMulti
+          closeMenuOnSelect={false}
           name="colors"
           className="multi-select"
           placeholder="E.g. Instagram, Reddit, Youtube, etc. "
