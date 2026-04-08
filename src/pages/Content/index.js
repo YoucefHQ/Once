@@ -7,10 +7,10 @@ const loadFont = () => {
   }
 };
 
-const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerSite) => {
+const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerSite, streak, timeSaved, personalizedTweet) => {
   loadFont();
   const style = document.createElement('style');
-  style.textContent = `body{overflow-y:hidden!important}#onceOverlay{background:#FFF;z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;margin-top:0.5rem;z-index:9999999999}#onceRow{position:relative;width:100%}#onceContainer{width:90%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{display:inline-block;cursor:pointer;width:80px;margin:auto}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:#19191b;margin-top:46px;margin-bottom:32px;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceContent h3{font-family:'DM Sans',sans-serif!important;color:#696871;margin-bottom:32px;text-align:center;font-weight:500;font-size:24px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:#696871;margin-top:32px}#onceOptions{text-decoration:underline;cursor:pointer}#onceContent a {color:#8e97fd;font-family:inherit;font-size:inherit;text-decoration:underline;}`;
+  style.textContent = `body{overflow-y:hidden!important}#onceOverlay{background:#FFF;z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;margin-top:0.5rem;z-index:9999999999}#onceRow{position:relative;width:100%}#onceContainer{width:90%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{display:inline-block;cursor:pointer;width:80px;margin:auto}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:#19191b;margin-top:46px;margin-bottom:32px;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceContent h3{font-family:'DM Sans',sans-serif!important;color:#696871;margin-bottom:32px;text-align:center;font-weight:500;font-size:24px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:#696871;margin-top:32px}#onceOptions{text-decoration:underline;cursor:pointer}#onceContent a {color:#8e97fd;font-family:inherit;font-size:inherit;text-decoration:underline;}.oncePills{display:flex;gap:12px;justify-content:center;margin:24px 0;flex-wrap:wrap}.oncePill{font-family:'DM Sans',sans-serif!important;font-size:14px;font-weight:500;background:rgba(142,151,253,0.12);color:#8e97fd;padding:8px 16px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}`;
   document.head.append(style);
 
   const onceOverlay = document.createElement('div');
@@ -43,6 +43,25 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
   button.textContent = 'Close tab';
   button.addEventListener('click', closeTab);
 
+  const pills = document.createElement('div');
+  pills.className = 'oncePills';
+  if (streak > 0) {
+    const streakPill = document.createElement('span');
+    streakPill.className = 'oncePill';
+    streakPill.textContent = '\u{1F525} ' + streak + '-day streak';
+    pills.appendChild(streakPill);
+  }
+  const blocksPill = document.createElement('span');
+  blocksPill.className = 'oncePill';
+  blocksPill.textContent = '\u{1F6E1}\uFE0F ' + blockedTimes + ' blocks';
+  pills.appendChild(blocksPill);
+  if (timeSaved) {
+    const savedPill = document.createElement('span');
+    savedPill.className = 'oncePill';
+    savedPill.textContent = '\u23F1\uFE0F ' + timeSaved + ' saved';
+    pills.appendChild(savedPill);
+  }
+
   const info = document.createElement('p');
   const onceLink = document.createElement('span');
   onceLink.id = 'onceOptions';
@@ -54,8 +73,11 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
   reviewLink.target = '_blank';
   reviewLink.textContent = 'a review';
 
+  const tweetText = personalizedTweet
+    ? encodeURIComponent(personalizedTweet)
+    : 'Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once';
   const tweetLink = document.createElement('a');
-  tweetLink.href = 'https://x.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=Stop%20wasting%20time%20on%20distracting%20websites%20with%20Once';
+  tweetLink.href = 'https://x.com/intent/tweet?url=https%3A%2F%2Fonceforchrome.com%2F&text=' + tweetText;
   tweetLink.target = '_blank';
   tweetLink.textContent = 'a tweet';
 
@@ -64,14 +86,14 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
     ' helps you stop wasting time on distracting websites.',
     document.createElement('br'),
     document.createElement('br'),
-    'Once blocked you ' + blockedTimes + ' times from distracting websites. Support Once with ',
+    'Support Once with ',
     reviewLink,
     ' or ',
     tweetLink,
     '.'
   );
 
-  row.append(logo, heading, subheading, button, info);
+  row.append(logo, heading, subheading, button, pills, info);
   container.appendChild(row);
   onceContent.appendChild(container);
   document.body.appendChild(onceContent);
@@ -131,7 +153,10 @@ chrome.runtime.sendMessage(
         response.timeAgo,
         response.timeRemaining,
         response.blockedTimes,
-        response.triggerSite
+        response.triggerSite,
+        response.streak,
+        response.timeSaved,
+        response.personalizedTweet
       );
     else if (response && response.showOnboarding)
       showOnboarding(response.websiteName, response.aggressiveMode);

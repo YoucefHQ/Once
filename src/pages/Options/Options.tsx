@@ -1,32 +1,14 @@
-import React from 'react';
-import Select from 'react-select';
-
-interface WebsiteOption {
-  label: string;
-  value: string;
-}
+import React, { useState } from 'react';
 
 import '../../assets/css/reset.css';
 import './Options.css';
 
-import { defaultWebsites } from './default-websites';
+import TabBar from './components/TabBar';
+import SettingsTab from './components/SettingsTab';
+import StatsTab from './components/StatsTab';
 
 const Options = () => {
-  const [aggressiveMode, setAggressiveMode] = React.useState(false);
-
-  React.useEffect(() => {
-    chrome.storage.local
-      .get('onceAggressiveMode')
-      .then(({ onceAggressiveMode }) => {
-        if (onceAggressiveMode) setAggressiveMode(true);
-      });
-  }, []);
-
-  const toggleAggressiveMode = () => {
-    const newValue = !aggressiveMode;
-    setAggressiveMode(newValue);
-    chrome.storage.local.set({ onceAggressiveMode: newValue });
-  };
+  const [activeTab, setActiveTab] = useState<'settings' | 'stats'>('settings');
 
   return (
     <>
@@ -57,130 +39,11 @@ const Options = () => {
       </div>
       <div className="content">
         <h1>Once</h1>
-        <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
-        <MultiSelectWebsites />
-        <div className="toggle-section">
-          <div className="faq-item toggle-row">
-            <div className="toggle-label">
-              <h3>Aggressive mode</h3>
-              <p>
-                Visiting any blocked site starts the timer for all blocked sites
-              </p>
-            </div>
-            <div
-              className={`toggle-switch ${aggressiveMode ? 'active' : ''}`}
-              onClick={toggleAggressiveMode}
-              role="switch"
-              aria-checked={aggressiveMode}
-            >
-              <div className="toggle-knob" />
-            </div>
-          </div>
-        </div>
+        <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+        {activeTab === 'settings' ? <SettingsTab /> : <StatsTab />}
       </div>
     </>
   );
 };
-
-class MultiSelectWebsites extends React.Component {
-  state = {
-    selectedWebsites: [],
-    blockedWebsites: null,
-  };
-
-  componentDidMount() {
-    chrome.storage.local
-      .get('onceBlockedWebsites')
-      .then(({ onceBlockedWebsites }) => {
-        if (onceBlockedWebsites) {
-          const websites = JSON.parse(onceBlockedWebsites as string) as string[];
-          const blockedWebsitesObject = defaultWebsites.filter(function (
-            blockedWebsite
-          ) {
-            return websites.includes(blockedWebsite.value);
-          });
-          this.setState({
-            selectedWebsites: blockedWebsitesObject,
-          });
-        }
-      });
-  }
-
-  getBlockedWebsites = () => {
-    chrome.storage.local
-      .get('onceBlockedWebsites')
-      .then(({ onceBlockedWebsites }) => {
-        if (!onceBlockedWebsites) this.setState({ blockedWebsites: null });
-        else {
-          const websites = JSON.parse(onceBlockedWebsites as string) as string[];
-          const blockedWebsitesObject = defaultWebsites.filter(function (
-            blockedWebsite
-          ) {
-            return websites.includes(blockedWebsite.value);
-          });
-          this.setState({ blockedWebsites: blockedWebsitesObject });
-        }
-      });
-  };
-
-  handleChange = (selectedWebsites: any) => {
-    const newSelectedWebsites = (selectedWebsites || []).map((w: any) => ({
-      value: w.value,
-      label: w.label,
-    }));
-    this.setState({
-      selectedWebsites: newSelectedWebsites,
-    }, () => {
-      this.saveBlockedWebsites();
-    });
-  };
-
-  saveBlockedWebsites = () => {
-    const urls = this.state.selectedWebsites.map((item: any) => item.value);
-    for (const item of this.state.selectedWebsites as any[]) {
-      if (item.label === 'X' || item.label === '𝕏') {
-        urls.push('https://x.com/home');
-      } else if (item.label === 'Reddit') {
-        urls.push('https://old.reddit.com/');
-      }
-    }
-    chrome.storage.local.set({
-      onceBlockedWebsites: JSON.stringify(urls),
-    });
-
-    const previouslyBlockedWebsites = defaultWebsites.filter(
-      (blockedWebsite) =>
-        !this.state.selectedWebsites.includes(blockedWebsite.value as never) &&
-        chrome.storage.local.get(blockedWebsite.label) != null
-    );
-    for (
-      let index = 0;
-      previouslyBlockedWebsites != null &&
-      index < previouslyBlockedWebsites.length;
-      index++
-    ) {
-      chrome.storage.local.remove(previouslyBlockedWebsites[index].label);
-    }
-  };
-
-  render() {
-    return (
-      <>
-        <Select<WebsiteOption, true>
-          options={defaultWebsites}
-          value={this.state.selectedWebsites}
-          onChange={this.handleChange}
-          isMulti
-          closeMenuOnSelect={false}
-          maxMenuHeight={175}
-          isClearable
-          name="colors"
-          className="multi-select"
-          placeholder="E.g. Instagram, Reddit, Youtube, etc. "
-        />
-      </>
-    );
-  }
-}
 
 export default Options;
