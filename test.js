@@ -49,6 +49,8 @@ describe('Test: Once', function () {
         timeout: 3000,
       });
       await optionsPage.click('[class*="-option"]');
+      // Close the dropdown (stays open with closeMenuOnSelect={false})
+      await optionsPage.keyboard.press('Escape');
       // Click Save
       await optionsPage.click('button');
       // Verify the button text changed to confirm the save
