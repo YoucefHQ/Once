@@ -27,9 +27,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
         if (aggressive) {
           if (await isGlobalTimerActive()) {
-            const newBlockedTimes = await recordBlock(websiteName);
-            const streakStorage = await chrome.storage.local.get('stats_streak');
-            const streak = streakStorage.stats_streak || { current: 0 };
+            const { newBlockedTimes, streak } = await recordBlock(websiteName);
             const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
             const personalizedTweet = generatePersonalizedTweet(
               newBlockedTimes.toString(),
@@ -62,9 +60,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             });
           }
         } else if (await isLastVisitLessThanOneHour(websiteName)) {
-          const newBlockedTimes = await recordBlock(websiteName);
-          const streakStorage = await chrome.storage.local.get('stats_streak');
-          const streak = streakStorage.stats_streak || { current: 0 };
+          const { newBlockedTimes, streak } = await recordBlock(websiteName);
           const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
           const personalizedTweet = generatePersonalizedTweet(
             newBlockedTimes.toString(),

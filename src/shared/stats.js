@@ -37,7 +37,7 @@ export async function recordBlock(websiteName) {
   ]);
 
   // blockedTimes (backward compat — still used by overlay text)
-  const newBlockedTimes = (parseInt(storage.blockedTimes) || 1) + 1;
+  const newBlockedTimes = (parseInt(storage.blockedTimes) || 0) + 1;
 
   // Per-site counts
   const siteBlocks = storage.stats_siteBlocks || {};
@@ -79,6 +79,12 @@ export async function recordBlock(websiteName) {
     }
   }
 
+  // Persist lastCleanupDate before cleanup to prevent concurrent runs
+  const needsCleanup = streak.lastCleanupDate !== today;
+  if (needsCleanup) {
+    streak.lastCleanupDate = today;
+  }
+
   // Single write
   await chrome.storage.local.set({
     blockedTimes: newBlockedTimes.toString(),
@@ -87,19 +93,18 @@ export async function recordBlock(websiteName) {
     stats_streak: streak,
   });
 
-  // Cleanup (async, at most once per day)
-  if (streak.lastCleanupDate !== today) {
-    streak.lastCleanupDate = today;
-    maybeCleanupDailyLog(dailyLog, streak);
+  // Cleanup (awaited to prevent concurrent read-modify-write corruption)
+  if (needsCleanup) {
+    await maybeCleanupDailyLog(dailyLog);
   }
 
-  return newBlockedTimes;
+  return { newBlockedTimes, streak };
 }
 
 /**
  * Prune daily log entries older than 90 days, roll up into monthly.
  */
-async function maybeCleanupDailyLog(dailyLog, streak) {
+async function maybeCleanupDailyLog(dailyLog) {
   const cutoffDate = getDateStringDaysAgo(90);
   const monthlyUpdates = {};
   let pruned = false;
@@ -110,6 +115,7 @@ async function maybeCleanupDailyLog(dailyLog, streak) {
       const monthKey = dateKey.substring(0, 7);
       if (!monthlyUpdates[monthKey]) monthlyUpdates[monthKey] = {};
       for (const [site, count] of Object.entries(dailyLog[dateKey])) {
+        if (site === '_total') continue;
         monthlyUpdates[monthKey][site] = (monthlyUpdates[monthKey][site] || 0) + count;
       }
       delete dailyLog[dateKey];
@@ -117,10 +123,7 @@ async function maybeCleanupDailyLog(dailyLog, streak) {
     }
   }
 
-  if (!pruned) {
-    await chrome.storage.local.set({ stats_streak: streak });
-    return;
-  }
+  if (!pruned) return;
 
   const storage = await chrome.storage.local.get('stats_monthlyLog');
   const monthlyLog = storage.stats_monthlyLog || {};
@@ -134,7 +137,6 @@ async function maybeCleanupDailyLog(dailyLog, streak) {
   await chrome.storage.local.set({
     stats_monthlyLog: monthlyLog,
     stats_dailyLog: dailyLog,
-    stats_streak: streak,
   });
 }
 
