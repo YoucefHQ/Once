@@ -10,6 +10,14 @@ Once is a Chrome extension that limits your visits to distracting websites to on
 2. Visit one of those sites and Once starts a one-hour timer
 3. If you try to visit the same site again within the hour, Once blocks it and shows you how much time is left
 
+## Features
+
+- **One-hour cooldown** — visit blocked sites once per hour, no cold-turkey required
+- **Stats dashboard** — track your streaks, per-site block counts, daily trends, and estimated time saved
+- **Shareable stats card** — generate a branded image card with your focus stats for X, Instagram Stories, or anywhere else
+- **Privacy-first sharing** — site names are hidden by default; toggle them on only if you want to
+- **Milestone badges** — earn badges as you hit block milestones (10, 50, 100, 250, …)
+
 ## Install
 
 [Get Once on the Chrome Web Store](https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep)
