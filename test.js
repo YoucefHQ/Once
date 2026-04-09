@@ -175,14 +175,9 @@ describe('Test: Once', function () {
   });
 
   after(async function () {
-    if (browser) {
-      const proc = browser.process();
-      browser.disconnect();
-      if (proc) proc.kill('SIGTERM');
-    }
-    // Clean up temporary Chrome profile
+    if (browser) await browser.close();
     const tmpDir = path.join(__dirname, '.test-profile');
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3 });
   });
 });
 
