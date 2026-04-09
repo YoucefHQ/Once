@@ -59,17 +59,13 @@ const Options = () => {
         <h1>Once</h1>
         <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
         <MultiSelectWebsites />
-        <p>
-          Once limits your visits to each of these websites (homepages only!)
-          to only once an hour.
-        </p>
         <div className="toggle-section">
-          <div className="toggle-row">
+          <div className="faq-item toggle-row">
             <div className="toggle-label">
-              <span className="toggle-title">Aggressive mode</span>
-              <span className="toggle-description">
+              <h3>Aggressive mode</h3>
+              <p>
                 Visiting any blocked site starts the timer for all blocked sites
-              </span>
+              </p>
             </div>
             <div
               className={`toggle-switch ${aggressiveMode ? 'active' : ''}`}

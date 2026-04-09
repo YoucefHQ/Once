@@ -42,16 +42,6 @@ h3 {
   margin-bottom: 32px;
   text-align: center;
 }
-p {
-  font-family: 'DM Sans', sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  color: #696871;
-  margin-top: 32px;
-  text-align: center;
-}
 button {
   font-family: 'DM Sans', sans-serif;
   font-style: normal;
@@ -151,22 +141,27 @@ button:focus {
 }
 
 .toggle-label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex: 1;
+  margin-right: 16px;
 }
 
-.toggle-title {
+.faq-item h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #19191b;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.faq-item p {
   font-family: 'DM Sans', sans-serif;
   font-weight: 500;
   font-size: 16px;
-  color: #19191b;
-}
-
-.toggle-description {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
+  line-height: 24px;
   color: #696871;
+  text-align: left;
+  margin-top: 0;
 }
 
 .toggle-switch {
