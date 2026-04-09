@@ -105,6 +105,16 @@ describe('Test: Once', function () {
       assert.equal(isActive, false, 'Toggle should default to off');
     });
 
+    it('adds Techmeme to blocklist', async function () {
+      await optionsPage.click('.multi-select input');
+      await optionsPage.type('.multi-select input', 'Techmeme');
+      await optionsPage.waitForSelector('[class*="-option"]', {
+        timeout: 3000,
+      });
+      await optionsPage.click('[class*="-option"]');
+      await optionsPage.keyboard.press('Escape');
+    });
+
     it('enables aggressive mode via toggle click', async function () {
       await optionsPage.click('.toggle-switch');
       const isActive = await optionsPage.$eval('.toggle-switch', (el) =>
@@ -113,12 +123,13 @@ describe('Test: Once', function () {
       assert.equal(isActive, true, 'Toggle should be active after click');
     });
 
-    it('shows aggressive onboarding on first visit', async function () {
+    it('shows aggressive onboarding on first visit to Hacker News', async function () {
       // Clear any existing timestamps so this counts as a fresh visit
       const sw = await getServiceWorker();
       await sw.evaluate(() =>
         chrome.storage.local.remove([
           'Hacker News',
+          'Techmeme',
           'onceGlobalTimestamp',
           'onceGlobalTriggerSite',
         ])
@@ -144,21 +155,22 @@ describe('Test: Once', function () {
       await hn.close();
     });
 
-    it('blocks the site on subsequent visit in aggressive mode', async function () {
+    it('blocks a different site (Techmeme) after visiting Hacker News', async function () {
+      // Wait for the background's onRemoved handler to store the visit timestamp
       await new Promise((r) => setTimeout(r, 1000));
 
-      const hn = await browser.newPage();
-      await hn.goto('https://news.ycombinator.com/', {
+      const tm = await browser.newPage();
+      await tm.goto('https://techmeme.com/', {
         waitUntil: 'load',
       });
 
-      await hn.waitForSelector('#onceButton', { timeout: 10000 });
-      const buttonText = await hn.$eval(
+      await tm.waitForSelector('#onceButton', { timeout: 10000 });
+      const buttonText = await tm.$eval(
         '#onceButton',
         (el) => el.textContent
       );
       assert.equal(buttonText, 'Close tab');
-      await hn.close();
+      await tm.close();
     });
   });
 
