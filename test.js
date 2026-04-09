@@ -95,15 +95,89 @@ describe('Test: Once', function () {
     });
   });
 
+  describe('Aggressive mode', function () {
+    it('shows the toggle defaulting to off', async function () {
+      const toggleExists = await optionsPage.$('.toggle-switch');
+      assert.ok(toggleExists, 'Toggle switch should exist on options page');
+      const isActive = await optionsPage.$eval('.toggle-switch', (el) =>
+        el.classList.contains('active')
+      );
+      assert.equal(isActive, false, 'Toggle should default to off');
+    });
+
+    it('adds Techmeme to blocklist', async function () {
+      await optionsPage.click('.multi-select input');
+      await optionsPage.type('.multi-select input', 'Techmeme');
+      await optionsPage.waitForSelector('[class*="-option"]', {
+        timeout: 3000,
+      });
+      await optionsPage.click('[class*="-option"]');
+      await optionsPage.keyboard.press('Escape');
+    });
+
+    it('enables aggressive mode via toggle click', async function () {
+      await optionsPage.click('.toggle-switch');
+      const isActive = await optionsPage.$eval('.toggle-switch', (el) =>
+        el.classList.contains('active')
+      );
+      assert.equal(isActive, true, 'Toggle should be active after click');
+    });
+
+    it('shows aggressive onboarding on first visit to Hacker News', async function () {
+      // Clear any existing timestamps so this counts as a fresh visit
+      const sw = await getServiceWorker();
+      await sw.evaluate(() =>
+        chrome.storage.local.remove([
+          'Hacker News',
+          'Techmeme',
+          'onceGlobalTimestamp',
+          'onceGlobalTriggerSite',
+        ])
+      );
+
+      const hn = await browser.newPage();
+      await hn.goto('https://news.ycombinator.com/', {
+        waitUntil: 'domcontentloaded',
+      });
+      await hn.waitForSelector('#onceContent', { timeout: 5000 });
+      const onboardingText = await hn.$eval(
+        '#onceContent p',
+        (el) => el.textContent
+      );
+      assert.ok(
+        onboardingText.includes('all blocked websites'),
+        'Aggressive onboarding should mention all blocked websites'
+      );
+      assert.ok(
+        onboardingText.includes('timer has started'),
+        'Aggressive onboarding should say timer has started'
+      );
+      await hn.close();
+    });
+
+    it('blocks a different site (Techmeme) after visiting Hacker News', async function () {
+      // Wait for the background's onRemoved handler to store the visit timestamp
+      await new Promise((r) => setTimeout(r, 1000));
+
+      const tm = await browser.newPage();
+      await tm.goto('https://techmeme.com/', {
+        waitUntil: 'load',
+      });
+
+      await tm.waitForSelector('#onceButton', { timeout: 10000 });
+      const buttonText = await tm.$eval(
+        '#onceButton',
+        (el) => el.textContent
+      );
+      assert.equal(buttonText, 'Close tab');
+      await tm.close();
+    });
+  });
+
   after(async function () {
-    if (browser) {
-      const proc = browser.process();
-      browser.disconnect();
-      if (proc) proc.kill('SIGTERM');
-    }
-    // Clean up temporary Chrome profile
+    if (browser) await browser.close();
     const tmpDir = path.join(__dirname, '.test-profile');
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3 });
   });
 });
 
