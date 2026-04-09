@@ -18,6 +18,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   (async () => {
     if (request.type === 'openOptions') {
       chrome.runtime.openOptionsPage();
+    } else if (request.type === 'openStats') {
+      const optionsUrl = chrome.runtime.getURL('options.html?tab=stats');
+      chrome.tabs.create({ url: optionsUrl });
     } else if (request.type === 'closeTab') {
       chrome.tabs.remove(sender.tab.id);
     } else if (request.type === 'checkWebsite') {

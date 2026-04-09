@@ -62,6 +62,15 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
     pills.appendChild(savedPill);
   }
 
+  const statsLink = document.createElement('a');
+  statsLink.className = 'oncePill';
+  statsLink.style.cssText = 'cursor:pointer;text-decoration:none;color:#8e97fd;border:1px solid rgba(142,151,253,0.3)';
+  statsLink.textContent = 'View all stats \u2192';
+  statsLink.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'openStats' });
+  });
+  pills.appendChild(statsLink);
+
   const info = document.createElement('p');
   const onceLink = document.createElement('span');
   onceLink.id = 'onceOptions';

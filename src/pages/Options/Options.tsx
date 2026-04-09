@@ -7,8 +7,13 @@ import TabBar from './components/TabBar';
 import SettingsTab from './components/SettingsTab';
 import StatsTab from './components/StatsTab';
 
+function getInitialTab(): 'settings' | 'stats' {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('tab') === 'stats' ? 'stats' : 'settings';
+}
+
 const Options = () => {
-  const [activeTab, setActiveTab] = useState<'settings' | 'stats'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'stats'>(getInitialTab);
 
   return (
     <>
