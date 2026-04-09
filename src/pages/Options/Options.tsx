@@ -55,7 +55,6 @@ const Options = () => {
 class MultiSelectWebsites extends React.Component {
   state = {
     selectedWebsites: [],
-    saveText: 'Save',
     blockedWebsites: null,
   };
 
@@ -95,43 +94,28 @@ class MultiSelectWebsites extends React.Component {
   };
 
   handleChange = (selectedWebsites: any) => {
-    var newSelectedWebsites = [];
-    if (this.state.saveText === 'You are all set!') {
-      this.setState({
-        saveText: 'Save',
-      });
-    }
-    for (
-      let index = 0;
-      selectedWebsites != null && index < selectedWebsites.length;
-      index++
-    ) {
-      newSelectedWebsites.push({
-        value: selectedWebsites[index].value,
-        label: selectedWebsites[index].label,
-      });
-      if (selectedWebsites[index].label === '𝕏') {
-        newSelectedWebsites.push({
-          value: 'https://x.com/home',
-          label: '𝕏',
-        });
-      } else if (selectedWebsites[index].label === 'Reddit') {
-        newSelectedWebsites.push({
-          value: 'https://old.reddit.com/',
-          label: 'Reddit',
-        });
-      }
-    }
+    const newSelectedWebsites = (selectedWebsites || []).map((w: any) => ({
+      value: w.value,
+      label: w.label,
+    }));
     this.setState({
       selectedWebsites: newSelectedWebsites,
+    }, () => {
+      this.saveBlockedWebsites();
     });
   };
 
   saveBlockedWebsites = () => {
+    const urls = this.state.selectedWebsites.map((item: any) => item.value);
+    for (const item of this.state.selectedWebsites as any[]) {
+      if (item.label === 'X' || item.label === '𝕏') {
+        urls.push('https://x.com/home');
+      } else if (item.label === 'Reddit') {
+        urls.push('https://old.reddit.com/');
+      }
+    }
     chrome.storage.local.set({
-      onceBlockedWebsites: JSON.stringify(
-        this.state.selectedWebsites.map((item: any) => item.value)
-      ),
+      onceBlockedWebsites: JSON.stringify(urls),
     });
 
     const previouslyBlockedWebsites = defaultWebsites.filter(
@@ -147,10 +131,6 @@ class MultiSelectWebsites extends React.Component {
     ) {
       chrome.storage.local.remove(previouslyBlockedWebsites[index].label);
     }
-
-    this.setState({
-      saveText: 'You are all set!',
-    });
   };
 
   render() {
@@ -161,13 +141,13 @@ class MultiSelectWebsites extends React.Component {
           value={this.state.selectedWebsites}
           onChange={this.handleChange}
           isMulti
+          closeMenuOnSelect={false}
+          maxMenuHeight={175}
+          isClearable
           name="colors"
           className="multi-select"
           placeholder="E.g. Instagram, Reddit, Youtube, etc. "
         />
-        <button onClick={() => this.saveBlockedWebsites()}>
-          {this.state.saveText}
-        </button>
       </>
     );
   }

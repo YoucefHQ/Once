@@ -29,12 +29,9 @@ describe('Test: Once', function () {
       );
       assert.equal(subtitle, 'Which websites waste your time?');
     });
-    it('shows the Save button', async function () {
-      const buttonText = await optionsPage.$eval(
-        'button',
-        (element) => element.textContent
-      );
-      assert.equal(buttonText, 'Save');
+    it('shows the multi-select', async function () {
+      const select = await optionsPage.$('.multi-select');
+      assert.ok(select);
     });
   });
 
@@ -49,14 +46,14 @@ describe('Test: Once', function () {
         timeout: 3000,
       });
       await optionsPage.click('[class*="-option"]');
-      // Click Save
-      await optionsPage.click('button');
-      // Verify the button text changed to confirm the save
-      const buttonText = await optionsPage.$eval(
-        'button',
+      // Close the dropdown
+      await optionsPage.keyboard.press('Escape');
+      // Verify Hacker News was selected (auto-saved)
+      const selectedText = await optionsPage.$eval(
+        '[class*="-multiValue"]',
         (el) => el.textContent
       );
-      assert.equal(buttonText, 'You are all set!');
+      assert.ok(selectedText.includes('Hacker News'));
     });
     it('shows onboarding on first visit to blocked site', async function () {
       const hn = await browser.newPage();
