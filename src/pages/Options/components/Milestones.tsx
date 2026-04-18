@@ -25,7 +25,8 @@ const Milestones: React.FC<MilestonesProps> = ({ earned }) => {
             >
               {isEarned ? (
                 <>
-                  {formatThreshold(threshold)}
+                  <span>{formatThreshold(threshold)}</span>
+                  <span className="milestone-label">blocks</span>
                   <span className="milestone-check">{'\u2713'}</span>
                 </>
               ) : (
