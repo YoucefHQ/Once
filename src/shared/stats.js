@@ -18,7 +18,7 @@ function getDateStringDaysAgo(n) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-const MILESTONE_THRESHOLDS = [10, 50, 100, 250, 500, 1000, 5000, 10000];
+const MILESTONE_THRESHOLDS = [50, 100, 250, 500, 1000, 5000, 10000];
 
 function computeMilestones(totalBlocks) {
   return MILESTONE_THRESHOLDS.filter((t) => totalBlocks >= t);
