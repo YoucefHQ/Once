@@ -53,7 +53,7 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
   }
   const blocksPill = document.createElement('span');
   blocksPill.className = 'oncePill';
-  blocksPill.textContent = '\u{1F6E1}\uFE0F ' + blockedTimes + ' blocks';
+  blocksPill.textContent = '\u{1F6E1}\uFE0F ' + blockedTimes + (blockedTimes === '1' ? ' block' : ' blocks');
   pills.appendChild(blocksPill);
   if (timeSaved) {
     const savedPill = document.createElement('span');
