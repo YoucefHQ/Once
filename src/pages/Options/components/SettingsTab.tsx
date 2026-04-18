@@ -10,7 +10,6 @@ interface WebsiteOption {
 class MultiSelectWebsites extends React.Component {
   state = {
     selectedWebsites: [],
-    saveText: 'Save',
     blockedWebsites: null,
   };
 
@@ -34,11 +33,6 @@ class MultiSelectWebsites extends React.Component {
 
   handleChange = (selectedWebsites: any) => {
     var newSelectedWebsites: any[] = [];
-    if (this.state.saveText === 'You are all set!') {
-      this.setState({
-        saveText: 'Save',
-      });
-    }
     const seen = new Set<string>();
     for (
       let index = 0;
@@ -60,6 +54,8 @@ class MultiSelectWebsites extends React.Component {
     }
     this.setState({
       selectedWebsites: newSelectedWebsites,
+    }, () => {
+      this.saveBlockedWebsites();
     });
   };
 
@@ -84,9 +80,6 @@ class MultiSelectWebsites extends React.Component {
       chrome.storage.local.remove(previouslyBlockedWebsites[index].label);
     }
 
-    this.setState({
-      saveText: 'You are all set!',
-    });
   };
 
   render() {
@@ -100,13 +93,12 @@ class MultiSelectWebsites extends React.Component {
           onChange={this.handleChange}
           isMulti
           closeMenuOnSelect={false}
+          maxMenuHeight={175}
+          isClearable
           name="colors"
           className="multi-select"
           placeholder="E.g. Instagram, Reddit, Youtube, etc. "
         />
-        <button onClick={() => this.saveBlockedWebsites()}>
-          {this.state.saveText}
-        </button>
       </>
     );
   }

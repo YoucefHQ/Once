@@ -16,6 +16,7 @@ chrome.action.onClicked.addListener(() => {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   (async () => {
+    try {
     if (request.type === 'openOptions') {
       chrome.runtime.openOptionsPage();
     } else if (request.type === 'openStats') {
@@ -89,6 +90,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       } else {
         sendResponse(false);
       }
+    }
+    } catch (err) {
+      console.error('[Once background error]', err);
+      sendResponse(false);
     }
   })();
 
