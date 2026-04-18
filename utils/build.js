@@ -71,16 +71,6 @@ async function copyAssets() {
     '  <script src="options.bundle.js"></script>\n  <link rel="stylesheet" href="options.bundle.css">\n  </body>'
   );
   await fs.writeFile(path.join(buildDir, 'options.html'), html);
-
-  // CSS to public/ (for the website)
-  await fs.copy(
-    path.join(root, 'src', 'assets', 'css'),
-    path.join(root, 'public')
-  );
-  await fs.copy(
-    path.join(root, 'src', 'pages', 'Options', 'Options.css'),
-    path.join(root, 'public', 'Options.css')
-  );
 }
 
 async function build() {

@@ -9,10 +9,6 @@
 # production
 /build
 
-# assets on website
-/website/Options.css
-/website/reset.css
-
 # misc
 .DS_Store
 .env

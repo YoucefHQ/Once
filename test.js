@@ -46,7 +46,7 @@ describe('Test: Once', function () {
         timeout: 3000,
       });
       await optionsPage.click('[class*="-option"]');
-      // Close the dropdown
+      // Close the dropdown (stays open with closeMenuOnSelect={false})
       await optionsPage.keyboard.press('Escape');
       // Verify Hacker News was selected (auto-saved)
       const selectedText = await optionsPage.$eval(

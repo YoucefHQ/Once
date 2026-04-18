@@ -1,8 +1,12 @@
 import { getWebsiteName } from './../Options/default-websites';
+import { recordBlock, migrateStats, getStatsForOverlay } from '../../shared/stats.js';
 
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
     chrome.runtime.openOptionsPage();
+  }
+  if (details.reason === 'install' || details.reason === 'update') {
+    migrateStats();
   }
 });
 
@@ -12,8 +16,13 @@ chrome.action.onClicked.addListener(() => {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   (async () => {
+    try {
     if (request.type === 'openOptions') {
-      chrome.runtime.openOptionsPage();
+      const optionsUrl = chrome.runtime.getURL('options.html');
+      chrome.tabs.create({ url: optionsUrl });
+    } else if (request.type === 'openStats') {
+      const optionsUrl = chrome.runtime.getURL('options.html?tab=stats');
+      chrome.tabs.create({ url: optionsUrl });
     } else if (request.type === 'closeTab') {
       chrome.tabs.remove(sender.tab.id);
     } else if (request.type === 'checkWebsite') {
@@ -23,21 +32,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
         if (aggressive) {
           if (await isGlobalTimerActive()) {
-            let storage = await chrome.storage.local.get('blockedTimes');
-            if (storage.blockedTimes == null) {
-              await chrome.storage.local.set({ blockedTimes: '2' });
-            } else {
-              const incrementBlockedTimes =
-                parseInt(storage.blockedTimes) + 1;
-              await chrome.storage.local.set({
-                blockedTimes: incrementBlockedTimes.toString(),
-              });
-            }
+            const { newBlockedTimes, streak } = await recordBlock(websiteName);
+            const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
 
-            storage = await chrome.storage.local.get([
-              'blockedTimes',
-              'onceGlobalTriggerSite',
-            ]);
+            const storage = await chrome.storage.local.get('onceGlobalTriggerSite');
 
             sendResponse({
               blockWebsite: true,
@@ -45,7 +43,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               triggerSite: storage.onceGlobalTriggerSite,
               timeAgo: await timeAgo('onceGlobalTimestamp'),
               timeRemaining: await timeRemaining('onceGlobalTimestamp'),
-              blockedTimes: storage.blockedTimes,
+              blockedTimes: newBlockedTimes.toString(),
+              streak: overlayStats.streak,
+              timeSaved: overlayStats.timeSaved,
             });
           } else {
             await chrome.storage.local.set({
@@ -60,24 +60,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             });
           }
         } else if (await isLastVisitLessThanOneHour(websiteName)) {
-          let storage = await chrome.storage.local.get('blockedTimes');
-          if (storage.blockedTimes == null) {
-            await chrome.storage.local.set({ blockedTimes: '2' });
-          } else {
-            const incrementBlockedTimes = parseInt(storage.blockedTimes) + 1;
-            await chrome.storage.local.set({
-              blockedTimes: incrementBlockedTimes.toString(),
-            });
-          }
-
-          storage = await chrome.storage.local.get('blockedTimes');
+          const { newBlockedTimes, streak } = await recordBlock(websiteName);
+          const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
 
           sendResponse({
             blockWebsite: true,
             websiteName: websiteName,
             timeAgo: await timeAgo(websiteName),
             timeRemaining: await timeRemaining(websiteName),
-            blockedTimes: storage.blockedTimes,
+            blockedTimes: newBlockedTimes.toString(),
+            streak: overlayStats.streak,
+            timeSaved: overlayStats.timeSaved,
           });
         } else {
           sendResponse({
@@ -88,6 +81,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       } else {
         sendResponse(false);
       }
+    }
+    } catch (err) {
+      console.error('[Once background error]', err);
+      sendResponse(false);
     }
   })();
 
