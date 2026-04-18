@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import '../../assets/css/reset.css';
 import './Options.css';
@@ -14,6 +14,10 @@ function getInitialTab(): 'settings' | 'stats' {
 
 const Options = () => {
   const [activeTab, setActiveTab] = useState<'settings' | 'stats'>(getInitialTab);
+
+  useEffect(() => {
+    document.title = activeTab === 'stats' ? 'Once - Stats' : 'Once - Settings';
+  }, [activeTab]);
 
   return (
     <>
