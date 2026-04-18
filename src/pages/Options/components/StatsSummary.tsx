@@ -43,4 +43,3 @@ const StatsSummary: React.FC<StatsSummaryProps> = ({
 };
 
 export default StatsSummary;
-export { formatTimeSaved };

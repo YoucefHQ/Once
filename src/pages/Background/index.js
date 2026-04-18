@@ -1,5 +1,5 @@
 import { getWebsiteName } from './../Options/default-websites';
-import { recordBlock, migrateStats, getStatsForOverlay, generatePersonalizedTweet } from '../../shared/stats.js';
+import { recordBlock, migrateStats, getStatsForOverlay } from '../../shared/stats.js';
 
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === 'install') {
@@ -33,10 +33,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           if (await isGlobalTimerActive()) {
             const { newBlockedTimes, streak } = await recordBlock(websiteName);
             const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
-            const personalizedTweet = generatePersonalizedTweet(
-              newBlockedTimes.toString(),
-              overlayStats.streak
-            );
 
             const storage = await chrome.storage.local.get('onceGlobalTriggerSite');
 
@@ -49,7 +45,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               blockedTimes: newBlockedTimes.toString(),
               streak: overlayStats.streak,
               timeSaved: overlayStats.timeSaved,
-              personalizedTweet,
             });
           } else {
             await chrome.storage.local.set({
@@ -66,10 +61,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         } else if (await isLastVisitLessThanOneHour(websiteName)) {
           const { newBlockedTimes, streak } = await recordBlock(websiteName);
           const overlayStats = getStatsForOverlay(newBlockedTimes, streak);
-          const personalizedTweet = generatePersonalizedTweet(
-            newBlockedTimes.toString(),
-            overlayStats.streak
-          );
 
           sendResponse({
             blockWebsite: true,
@@ -79,7 +70,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             blockedTimes: newBlockedTimes.toString(),
             streak: overlayStats.streak,
             timeSaved: overlayStats.timeSaved,
-            personalizedTweet,
           });
         } else {
           sendResponse({

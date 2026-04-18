@@ -206,18 +206,6 @@ export function getStatsForOverlay(totalBlockedTimes, streak) {
 }
 
 /**
- * Generate personalized tweet text.
- */
-export function generatePersonalizedTweet(blockedTimes, streak) {
-  const count = parseInt(blockedTimes) || 0;
-  let text = `I've stayed focused ${count} times with @onceforchrome!`;
-  if (streak > 0) {
-    text += ` \u{1F525} ${streak}-day streak`;
-  }
-  return text;
-}
-
-/**
  * One-time migration from existing blockedTimes.
  */
 export async function migrateStats() {

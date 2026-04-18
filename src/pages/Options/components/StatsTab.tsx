@@ -4,7 +4,6 @@ import StatsSummary from './StatsSummary';
 import SiteBreakdown from './SiteBreakdown';
 import TrendChart from './TrendChart';
 import Milestones from './Milestones';
-import StatsCard from './StatsCard';
 
 interface StatsData {
   totalBlocks: number;
@@ -21,7 +20,6 @@ interface StatsData {
 
 const StatsTab: React.FC = () => {
   const [stats, setStats] = useState<StatsData | null>(null);
-  const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
     getStats().then(setStats);
@@ -51,12 +49,6 @@ const StatsTab: React.FC = () => {
       <SiteBreakdown siteBlocks={stats.siteBlocks} />
       <TrendChart dailyLog={stats.dailyLog} />
       <Milestones earned={stats.streak.milestones} />
-      <button className="share-btn" onClick={() => setShowCard(true)}>
-        Share your stats
-      </button>
-      {showCard && (
-        <StatsCard stats={stats} onClose={() => setShowCard(false)} />
-      )}
     </>
   );
 };
