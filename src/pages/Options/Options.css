@@ -332,6 +332,7 @@ button:focus {
 .trend-bar {
   fill: #8e97fd;
   rx: 3;
+  cursor: pointer;
 }
 .trend-bar:hover {
   fill: #7c85e0;
