@@ -405,12 +405,3 @@ button:focus {
   opacity: 0.5;
 }
 
-.stats-empty {
-  text-align: center;
-  padding: 48px 0;
-  color: #696871;
-  font-family: 'DM Sans', sans-serif;
-}
-.stats-empty p {
-  margin-top: 8px;
-}

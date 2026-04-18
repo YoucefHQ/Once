@@ -31,10 +31,9 @@ const StatsTab: React.FC = () => {
 
   if (stats.totalBlocks === 0) {
     return (
-      <div className="stats-empty">
-        <div style={{ fontSize: 48 }}>{'\u{1F6E1}\uFE0F'}</div>
+      <div className="faq-item">
         <h3>No blocks yet</h3>
-        <p>Once will start tracking your stats as soon as it blocks a distracting site.</p>
+        <p>Once will track your stats as soon as it blocks a distracting site.</p>
       </div>
     );
   }
