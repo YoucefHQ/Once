@@ -31,7 +31,7 @@ const StatsSummary: React.FC<StatsSummaryProps> = ({
       <div className="stat-card">
         <div className="stat-card-icon">{'\u{1F6E1}\uFE0F'}</div>
         <div className="stat-card-value">{totalBlocks}</div>
-        <div className="stat-card-label">blocks</div>
+        <div className="stat-card-label">{totalBlocks === 1 ? 'block' : 'blocks'}</div>
       </div>
       <div className="stat-card">
         <div className="stat-card-icon">{'\u23F1\uFE0F'}</div>

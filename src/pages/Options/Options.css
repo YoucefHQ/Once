@@ -234,6 +234,9 @@ button:focus {
   border-radius: 16px;
   padding: 20px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .stat-card-icon {
   font-size: 24px;
@@ -263,10 +266,6 @@ button:focus {
 /* Site breakdown */
 .site-breakdown {
   margin-bottom: 32px;
-}
-.site-breakdown h3 {
-  text-align: left;
-  margin-bottom: 16px;
 }
 .site-row {
   display: flex;
@@ -326,10 +325,6 @@ button:focus {
 .trend-chart {
   margin-bottom: 32px;
 }
-.trend-chart h3 {
-  text-align: left;
-  margin-bottom: 16px;
-}
 .trend-svg {
   width: 100%;
   display: block;
@@ -364,10 +359,6 @@ button:focus {
 /* Milestones */
 .milestones {
   margin-bottom: 32px;
-}
-.milestones h3 {
-  text-align: left;
-  margin-bottom: 16px;
 }
 .milestones-grid {
   display: flex;

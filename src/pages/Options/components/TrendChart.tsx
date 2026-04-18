@@ -26,15 +26,16 @@ const TrendChart: React.FC<TrendChartProps> = ({ dailyLog }) => {
   const values = days.map((d) => dailyLog[d]?._total || 0);
   const maxVal = Math.max(...values, 1);
 
-  const svgWidth = 600;
+  const padLeft = 20;
+  const svgWidth = 600 + padLeft;
   const svgHeight = 160;
   const barPadding = 3;
-  const barWidth = (svgWidth - barPadding * 30) / 30;
+  const barWidth = (600 - barPadding * 30) / 30;
   const chartBottom = svgHeight - 24;
   const chartHeight = chartBottom - 8;
 
   return (
-    <div className="trend-chart" style={{ position: 'relative' }}>
+    <div className="trend-chart faq-item" style={{ position: 'relative' }}>
       <h3>Last 30 days</h3>
       <svg
         className="trend-svg"
@@ -42,7 +43,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ dailyLog }) => {
         preserveAspectRatio="xMidYMid meet"
       >
         {days.map((day, i) => {
-          const x = i * (barWidth + barPadding) + barPadding / 2;
+          const x = padLeft + i * (barWidth + barPadding) + barPadding / 2;
           const val = values[i];
           const barH = val > 0 ? Math.max((val / maxVal) * chartHeight, 4) : 2;
           const y = chartBottom - barH;

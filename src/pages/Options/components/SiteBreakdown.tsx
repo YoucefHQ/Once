@@ -13,7 +13,7 @@ const SiteBreakdown: React.FC<SiteBreakdownProps> = ({ siteBlocks }) => {
   if (entries.length === 0) return null;
 
   return (
-    <div className="site-breakdown">
+    <div className="site-breakdown faq-item">
       <h3>Top blocked sites</h3>
       {visible.map(([site, count]) => (
         <div className="site-row" key={site}>

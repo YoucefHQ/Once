@@ -12,7 +12,7 @@ function formatThreshold(n: number): string {
 
 const Milestones: React.FC<MilestonesProps> = ({ earned }) => {
   return (
-    <div className="milestones">
+    <div className="milestones faq-item">
       <h3>Milestones</h3>
       <div className="milestones-grid">
         {MILESTONE_THRESHOLDS.map((threshold) => {
