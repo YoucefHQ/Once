@@ -1,6 +1,6 @@
 {
   "name": "once",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Block distracting websites and limit visits to once per hour.",
   "license": "MIT",
   "repository": {
