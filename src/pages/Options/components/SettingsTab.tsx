@@ -7,6 +7,43 @@ interface WebsiteOption {
   value: string;
 }
 
+const selectStyles = {
+  control: (base: any) => ({
+    ...base,
+    background: 'var(--color-bg)',
+    borderColor: 'var(--color-border)',
+  }),
+  menu: (base: any) => ({
+    ...base,
+    background: 'var(--color-bg)',
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    background: state.isFocused ? 'var(--color-surface)' : 'var(--color-bg)',
+    color: 'var(--color-text)',
+  }),
+  multiValue: (base: any) => ({
+    ...base,
+    background: 'var(--color-surface)',
+  }),
+  multiValueLabel: (base: any) => ({
+    ...base,
+    color: 'var(--color-text)',
+  }),
+  input: (base: any) => ({
+    ...base,
+    color: 'var(--color-text)',
+  }),
+  placeholder: (base: any) => ({
+    ...base,
+    color: 'var(--color-text-secondary)',
+  }),
+  singleValue: (base: any) => ({
+    ...base,
+    color: 'var(--color-text)',
+  }),
+};
+
 class MultiSelectWebsites extends React.Component {
   state = {
     selectedWebsites: [],
@@ -98,6 +135,7 @@ class MultiSelectWebsites extends React.Component {
           name="colors"
           className="multi-select"
           placeholder="E.g. Instagram, Reddit, Youtube, etc. "
+          styles={selectStyles}
         />
       </>
     );
@@ -123,7 +161,7 @@ const SettingsTab: React.FC = () => {
 
   return (
     <>
-      <h2 style={{ color: 'black' }}>Which websites waste your time?</h2>
+      <h2>Which websites waste your time?</h2>
       <MultiSelectWebsites />
       <div className="toggle-section">
         <div className="faq-item toggle-row">
