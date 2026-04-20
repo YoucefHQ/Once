@@ -10,7 +10,7 @@ const loadFont = () => {
 const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerSite, streak, timeSaved) => {
   loadFont();
   const style = document.createElement('style');
-  style.textContent = `:root{--once-bg:#fff;--once-text:#19191b;--once-text-secondary:#696871}@media(prefers-color-scheme:dark){:root{--once-bg:#000;--once-text:#f0f0f0;--once-text-secondary:#a0a0a8}}body{overflow-y:hidden!important}#onceOverlay{background:var(--once-bg);z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;z-index:9999999999}#onceRow{position:relative;width:100%}#onceContainer{width:90%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{display:inline-block;cursor:pointer;width:80px;margin:auto}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:var(--once-text);margin-top:24px;margin-bottom:16px;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceContent h3{font-family:'DM Sans',sans-serif!important;color:var(--once-text-secondary);margin-bottom:32px;text-align:center;font-weight:500;font-size:24px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:var(--once-text-secondary);margin-top:32px}#onceOptions{text-decoration:underline;cursor:pointer}#onceContent a{color:#8e97fd;font-family:inherit;font-size:inherit;text-decoration:underline}.oncePills{display:flex;gap:12px;justify-content:center;margin:32px 0;flex-wrap:wrap}.oncePill{font-family:'DM Sans',sans-serif!important;font-size:14px;font-weight:500;background:rgba(142,151,253,0.12);color:#8e97fd;padding:8px 16px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}`;
+  style.textContent = `:root{--once-bg:#fff;--once-text:#19191b;--once-text-secondary:#696871}@media(prefers-color-scheme:dark){:root{--once-bg:#000;--once-text:#f0f0f0;--once-text-secondary:#a0a0a8}}body{overflow-y:hidden!important}#onceOverlay{background:var(--once-bg);z-index:99999999;top:0;left:0;bottom:0;right:0;position:fixed}#onceContent{position:fixed;left:50%;transform:translateX(-50%)!important;top:0;text-align:center;width:62.66%;padding-top:80px;z-index:9999999999}#onceRow{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:32px}#onceContainer{width:90%;max-width:60rem;margin-left:auto;margin-right:auto}#onceLogo{cursor:pointer;width:80px}#onceContent h2{font-family:'DM Sans',sans-serif!important;color:var(--once-text);margin:0;text-align:center;font-weight:bold;font-size:64px;letter-spacing:-1px;line-height:1.1}#onceContent h3{font-family:'DM Sans',sans-serif!important;color:var(--once-text-secondary);margin:0;text-align:center;font-weight:500;font-size:24px;letter-spacing:-1px;line-height:1.1}#onceButton{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;background:#8e97fd;padding:16px 40px;border-radius:32px;border:0;color:#fff;cursor:pointer}#onceButton:hover{background:rgba(142,151,253,0.9)}#onceButton:active,#onceButton:focus{outline:0}#onceContent p{font-family:'DM Sans',sans-serif!important;font-style:normal;font-weight:500;font-size:16px;line-height:20px;color:var(--once-text-secondary);margin:0}#onceOptions{text-decoration:underline;cursor:pointer}#onceContent a{color:#8e97fd;font-family:inherit;font-size:inherit;text-decoration:underline}.oncePills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.oncePill{font-family:'DM Sans',sans-serif!important;font-size:14px;font-weight:500;background:rgba(142,151,253,0.12);color:#8e97fd;padding:8px 16px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}`;
   document.head.append(style);
 
   const onceOverlay = document.createElement('div');
@@ -77,20 +77,7 @@ const showOverlay = (websiteName, timeAgo, timeRemaining, blockedTimes, triggerS
   onceLink.textContent = 'Once';
   onceLink.addEventListener('click', openOptions);
 
-  const reviewLink = document.createElement('a');
-  reviewLink.href = 'https://chromewebstore.google.com/detail/once-block-distracting-we/cmkicojchpmgdakmdjfhjjibbfmfplep/reviews';
-  reviewLink.target = '_blank';
-  reviewLink.textContent = 'a review';
-
-  info.append(
-    onceLink,
-    ' helps you stop wasting time on distracting websites.',
-    document.createElement('br'),
-    document.createElement('br'),
-    'Support Once with ',
-    reviewLink,
-    '.'
-  );
+  info.append(onceLink, ' helps you stop wasting time on distracting websites.');
 
   row.append(logo, heading, subheading, button, pills, info);
   container.appendChild(row);
